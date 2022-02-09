@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">FoodExample</string>
+    <string name="content_description">La descripción va aqui</string>
+    <string name="needs_prefix">Prefijo de prueba aqui</string>
+    <string name="gallery_content_description">Navegar a la galeria</string>
+    <string name="menu_item_share">Compartir</string>
+</resources>
