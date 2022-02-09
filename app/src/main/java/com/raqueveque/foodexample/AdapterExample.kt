@@ -20,7 +20,7 @@ class AdapterExample: RecyclerView.Adapter<AdapterExample.ViewHolder>() {
         val food = view.findViewById(R.id.description) as TextView
         val price = view.findViewById(R.id.price) as TextView
 
-        fun bind(list: ModelExample, context: Context) {
+        fun bind(list: ModelExample) {
             food.text = list.food
             price.text = list.price
         }
@@ -33,7 +33,7 @@ class AdapterExample: RecyclerView.Adapter<AdapterExample.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = list[position]
-        holder.bind(item, context)
+        holder.bind(item)
     }
 
     override fun getItemCount(): Int {
