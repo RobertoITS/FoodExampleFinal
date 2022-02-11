@@ -1,21 +1,13 @@
 package com.raqueveque.foodexample
 
 import android.R
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.os.Build
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
+import android.content.Context
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.ViewAnimationUtils
-import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
-import android.view.animation.AnimationSet
-import android.view.animation.TranslateAnimation
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.view.MenuItemCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.raqueveque.foodexample.databinding.ActivityMainBinding
@@ -25,8 +17,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val adapter: AdapterExample = AdapterExample()
     private var list: MutableList<ModelExample> = mutableListOf()
-
-    private var mSearchItem: MenuItem? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -58,14 +48,16 @@ class MainActivity : AppCompatActivity() {
 
                 //Controlamos el movimiento del scroll
                 //pasamos la opcion de deshabilitar o no el scroll del recycler para evitar inconvenientes
-                if (!v.canScrollVertically(1)) {
-                    Toast.makeText(this, "Final!", Toast.LENGTH_LONG).show()
+                if (!v.canScrollVertically(1)){
+//                    Toast.makeText(this, "Final!", Toast.LENGTH_LONG).show()
                     binding.recycler.isNestedScrollingEnabled = true
                 }
                 if (v.canScrollVertically(1)) {
-                    Toast.makeText(this, "Principio", Toast.LENGTH_LONG).show()
+//                    Toast.makeText(this, "Principio", Toast.LENGTH_LONG).show()
                     binding.recycler.isNestedScrollingEnabled = false
                 }
+//
+//                binding.plantDetailScrollview.isNestedScrollingEnabled = !binding.recycler.canScrollVertically(1)
 
                 // User scrolled past image to height of toolbar and the title text is
                 // underneath the toolbar, so the toolbar should be shown.
@@ -82,6 +74,32 @@ class MainActivity : AppCompatActivity() {
                     // Show the plant name if toolbar is shown
                     binding.toolbarLayout.isTitleEnabled = shouldShowToolbar
 
+
+                    if (shouldShowToolbar){
+                        val colorFrom = resources.getColor(R.color.transparent)
+                        val colorTo = resources.getColor(R.color.darker_gray)
+                        val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+                        colorAnimation.duration = 250 // milliseconds
+
+                        colorAnimation.addUpdateListener { animator ->
+                            binding.toolbar.setBackgroundColor(
+                                animator.animatedValue as Int
+                            )
+                        }
+                        colorAnimation.start()
+                    } else {
+                        val colorFrom = ContextCompat.getColor(this, R.color.darker_gray)
+                        val colorTo = ContextCompat.getColor(this, R.color.transparent)
+                        val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+                        colorAnimation.duration = 250 // milliseconds
+
+                        colorAnimation.addUpdateListener { animator ->
+                            binding.toolbar.setBackgroundColor(
+                                animator.animatedValue as Int
+                            )
+                        }
+                        colorAnimation.start()
+                    }
                 }
             }
         )
