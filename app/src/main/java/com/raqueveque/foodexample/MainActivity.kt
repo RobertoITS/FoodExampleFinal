@@ -41,21 +41,19 @@ class MainActivity : AppCompatActivity() {
 
         var isToolbarShown = false
 
-        binding.toolbarLayout.title = binding.plantDetailName.text
-
         binding.plantDetailScrollview.setOnScrollChangeListener(
             NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, _, _ ->
 
                 //Controlamos el movimiento del scroll
                 //pasamos la opcion de deshabilitar o no el scroll del recycler para evitar inconvenientes
-                if (!v.canScrollVertically(1)){
-//                    Toast.makeText(this, "Final!", Toast.LENGTH_LONG).show()
-                    binding.recycler.isNestedScrollingEnabled = true
-                }
-                if (v.canScrollVertically(1)) {
-//                    Toast.makeText(this, "Principio", Toast.LENGTH_LONG).show()
-                    binding.recycler.isNestedScrollingEnabled = false
-                }
+//                if (!v.canScrollVertically(1)){
+////                    Toast.makeText(this, "Final!", Toast.LENGTH_LONG).show()
+//                    binding.recycler.isNestedScrollingEnabled = true
+//                }
+//                if (v.canScrollVertically(1)) {
+////                    Toast.makeText(this, "Principio", Toast.LENGTH_LONG).show()
+//                    binding.recycler.isNestedScrollingEnabled = false
+//                }
 //
 //                binding.plantDetailScrollview.isNestedScrollingEnabled = !binding.recycler.canScrollVertically(1)
 
@@ -72,34 +70,34 @@ class MainActivity : AppCompatActivity() {
                     binding.appbar.isActivated = shouldShowToolbar
 
                     // Show the plant name if toolbar is shown
-                    binding.toolbarLayout.isTitleEnabled = shouldShowToolbar
+//                    binding.toolbarLayout.isTitleEnabled = shouldShowToolbar
 
-
-                    if (shouldShowToolbar){
-                        val colorFrom = resources.getColor(R.color.transparent)
-                        val colorTo = resources.getColor(R.color.darker_gray)
-                        val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-                        colorAnimation.duration = 250 // milliseconds
-
-                        colorAnimation.addUpdateListener { animator ->
-                            binding.toolbar.setBackgroundColor(
-                                animator.animatedValue as Int
-                            )
-                        }
-                        colorAnimation.start()
-                    } else {
-                        val colorFrom = ContextCompat.getColor(this, R.color.darker_gray)
-                        val colorTo = ContextCompat.getColor(this, R.color.transparent)
-                        val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-                        colorAnimation.duration = 250 // milliseconds
-
-                        colorAnimation.addUpdateListener { animator ->
-                            binding.toolbar.setBackgroundColor(
-                                animator.animatedValue as Int
-                            )
-                        }
-                        colorAnimation.start()
-                    }
+                    //Controla la animacion en el cambio de color
+//                    if (shouldShowToolbar){
+//                        val colorFrom = resources.getColor(R.color.transparent)
+//                        val colorTo = resources.getColor(R.color.darker_gray)
+//                        val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+//                        colorAnimation.duration = 250 // milliseconds
+//
+//                        colorAnimation.addUpdateListener { animator ->
+//                            binding.toolbar.setBackgroundColor(
+//                                animator.animatedValue as Int
+//                            )
+//                        }
+//                        colorAnimation.start()
+//                    } else {
+//                        val colorFrom = ContextCompat.getColor(this, R.color.darker_gray)
+//                        val colorTo = ContextCompat.getColor(this, R.color.transparent)
+//                        val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+//                        colorAnimation.duration = 250 // milliseconds
+//
+//                        colorAnimation.addUpdateListener { animator ->
+//                            binding.toolbar.setBackgroundColor(
+//                                animator.animatedValue as Int
+//                            )
+//                        }
+//                        colorAnimation.start()
+//                    }
                 }
             }
         )
