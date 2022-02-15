@@ -3,20 +3,15 @@ package com.raqueveque.foodexample
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewAnimationUtils
-import android.widget.AutoCompleteTextView
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
+import android.view.*
+import android.view.inputmethod.InputMethodManager
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.MenuItemCompat
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,8 +22,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private val adapter: AdapterExample = AdapterExample()
     private var list: MutableList<ModelExample> = mutableListOf()
+    private var originalList: MutableList<ModelExample> = mutableListOf()
 
-    private var searchToolbar: Toolbar? = null
     private lateinit var searchMenu: Menu
     private lateinit var itemSearch: MenuItem
 
@@ -38,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setList()
+        originalList.addAll(list)
 
         setupAdapter()
 
@@ -62,6 +58,9 @@ class MainActivity : AppCompatActivity() {
             }
         )
 
+        binding.rootActivity.setOnClickListener {
+            hideKeyboard()
+        }
 
     }
 
@@ -69,17 +68,21 @@ class MainActivity : AppCompatActivity() {
         binding.searchToolbar.inflateMenu(R.menu.menu_search)
         searchMenu = binding.searchToolbar.menu
         binding.searchToolbar.setNavigationOnClickListener {
-            circleRevealAnimation(1, containsOverflow = true, isShow = false)
+            circleRevealAnimation(R.id.searchToolbar, isShow = false)
         }
         itemSearch = searchMenu.findItem(R.id.action_filter_search)
         MenuItemCompat.setOnActionExpandListener(itemSearch, object : MenuItemCompat.OnActionExpandListener{
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
                 //Hacer algo cuando expande
+                //Se esconde el titulo
+                binding.toolbarLayout.isTitleEnabled = false
                 return true
             }
 
             override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                circleRevealAnimation(1, containsOverflow = true, isShow = false)
+                circleRevealAnimation(R.id.searchToolbar, isShow = false)
+                //Se muestra el titulo
+                binding.toolbarLayout.isTitleEnabled = true
                 return true
             }
         })
@@ -110,65 +113,87 @@ class MainActivity : AppCompatActivity() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+
+        //Metodos de busqueda - SearchView
+        /**Este metodo se puede implementar en la clase MainActivity, pero lo vamos
+         * a hacer desde el iniciador del searchView*/
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                callSearch(query)
+                adapter.search(query)
                 searchView.clearFocus()
                 return true
             }
-
             override fun onQueryTextChange(newText: String): Boolean {
-                callSearch(newText)
+                adapter.search(newText)
                 return true
-            }
-
-            fun callSearch(query: String) {
-                //Do searching
-                Log.i("query", "" + query)
             }
         })
     }
 
-    private fun circleRevealAnimation(posFromRight: Int, containsOverflow: Boolean, isShow: Boolean) {
-        var width = binding.searchToolbar.width
-        if (posFromRight > 0) width -= posFromRight * resources
-            .getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_button_min_width_material) - resources
-            .getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_button_min_width_material) / 2
-        if (containsOverflow) width -= resources
-            .getDimensionPixelSize(androidx.appcompat.R.dimen.abc_action_button_min_width_overflow_material)
+    private fun circleRevealAnimation(id: Int, isShow: Boolean) {
+        val view = findViewById<View>(id)
+        var width = view.width
+        //Las medidas 48 son en dp (density-independent pixels)
+        width -= 1 * 48 - 48 / 2
+        //Las medidas 36 son en dp (density-independent pixels)
+        width -= 36
         val cx = width
-        val cy = binding.searchToolbar.height / 2
+        val cy = view.height / 2
         val anim: Animator = if (isShow) ViewAnimationUtils.createCircularReveal(
-            binding.searchToolbar, cx, cy, 0f, width.toFloat())
-            else ViewAnimationUtils.createCircularReveal(binding.searchToolbar, cx, cy, width.toFloat(), 0f)
+            view, cx, cy, 0f, width.toFloat())
+            else ViewAnimationUtils.createCircularReveal(view, cx, cy, width.toFloat(), 0f)
         anim.duration = 220.toLong()
-
         // make the view invisible when the animation is done
         anim.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 if (!isShow) {
                     super.onAnimationEnd(animation)
-                    binding.searchToolbar.visibility = View.INVISIBLE
+                    view.visibility = View.INVISIBLE
                 }
             }
         })
-
         // make the view visible and start the animation
-        if (isShow) binding.searchToolbar.visibility = View.VISIBLE
-
+        if (isShow) {
+            view.visibility = View.VISIBLE
+        }
         // start the animation
         anim.start()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_home, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        //Maneja la seleccion de items
+        return when (item.itemId){
+            R.id.action_status -> {
+                Toast.makeText(this, "Home Status Click", Toast.LENGTH_SHORT).show()
+                true
+            }
+            R.id.action_search -> {
+                circleRevealAnimation(R.id.searchToolbar, isShow = true)
+                itemSearch.expandActionView()
+                true
+            }
+            R.id.action_settings -> {
+                Toast.makeText(this, "Home Settings Click", Toast.LENGTH_SHORT).show()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun setList() {
         list.add(ModelExample("Pizza", "$400"))
         list.add(ModelExample("Pizza", "$400"))
         list.add(ModelExample("Pizza", "$400"))
-        list.add(ModelExample("Pizza", "$400"))
-        list.add(ModelExample("Pizza", "$400"))
-        list.add(ModelExample("Pizza", "$400"))
-        list.add(ModelExample("Pizza", "$400"))
-        list.add(ModelExample("Pizza", "$400"))
+        list.add(ModelExample("asd", "$400"))
+        list.add(ModelExample("Hamburguesa", "$400"))
+        list.add(ModelExample("Empanada", "$400"))
+        list.add(ModelExample("Helado", "$400"))
+        list.add(ModelExample("Panchos", "$400"))
         list.add(ModelExample("Pizza", "$400"))
         list.add(ModelExample("Pizza", "$400"))
         list.add(ModelExample("Pizza", "$400"))
@@ -182,5 +207,12 @@ class MainActivity : AppCompatActivity() {
         binding.recycler.isNestedScrollingEnabled = false
         adapter.recyclerAdapter(list, this)
         binding.recycler.adapter = adapter
+    }
+
+    //Esconder el teclado
+    private fun hideKeyboard(){
+        val imm: InputMethodManager =
+            this.getSystemService(this.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(this.currentFocus.windowToken, 0)
     }
 }
