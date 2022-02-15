@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         binding.rootActivity.setOnClickListener {
-            hideKeyboard()
+            hideKeyboard(this)
         }
 
     }
@@ -210,9 +210,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     //Esconder el teclado
-    private fun hideKeyboard(){
+    private fun hideKeyboard(activity: Activity){
         val imm: InputMethodManager =
-            this.getSystemService(this.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(this.currentFocus.windowToken, 0)
+            activity.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(this.currentFocus?.windowToken, 0)
     }
 }
