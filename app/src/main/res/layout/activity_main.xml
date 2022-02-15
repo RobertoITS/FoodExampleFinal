@@ -44,7 +44,16 @@
                 app:titleTextColor="?attr/colorOnSurface"
                 app:layout_collapseMode="pin"
                 app:navigationIcon="@drawable/ic_detail_back"
-                app:menu="@menu/menu_detail" />
+                app:menu="@menu/menu_search" />
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/searchToolbar"
+                app:collapseIcon="@drawable/ic_arrow_back"
+                app:titleTextColor="@color/sunflower_gray_50_a600"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/sunflower_gray_50"
+                android:visibility="gone"/>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
