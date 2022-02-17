@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.content.ContentValues
-import android.content.ContentValues.TAG
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
@@ -14,7 +13,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
-import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.ktx.firestore
@@ -200,27 +198,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setList() {
-        db.collection("food").get().addOnSuccessListener{ resutl ->
-                for (document in resutl){
-                    val food = ModelExample(document.getString("food").toString(), document.getString("price").toString())
-                    list.add(food)
+        db.collection("food").get().addOnSuccessListener { documents ->
+            val listData = mutableListOf<ModelExample>()
+            for (document in documents){
+                val food = document.getString("food")
+                val image = document.getString("image")
+                val price = document.getString("price")
+                val allFood = ModelExample(food!!, image!!, price!!)
+                listData.add(allFood)
             }
-        } .addOnFailureListener { exception ->
-            Log.w(TAG, "Error", exception)
+            list.addAll(listData)
         }
-//        list.add(ModelExample("Pizza", "$400"))
-//        list.add(ModelExample("Pizza", "$400"))
-//        list.add(ModelExample("Pizza", "$400"))
-//        list.add(ModelExample("asd", "$400"))
-//        list.add(ModelExample("Hamburguesa", "$400"))
-//        list.add(ModelExample("Empanada", "$400"))
-//        list.add(ModelExample("Helado", "$400"))
-//        list.add(ModelExample("Panchos", "$400"))
-//        list.add(ModelExample("Pizza", "$400"))
-//        list.add(ModelExample("Pizza", "$400"))
-//        list.add(ModelExample("Pizza", "$400"))
-//        list.add(ModelExample("Pizza", "$400"))
-//        list.add(ModelExample("Pizza", "$400"))
     }
 
     private fun setupAdapter() {
