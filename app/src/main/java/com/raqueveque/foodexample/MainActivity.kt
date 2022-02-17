@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
@@ -16,6 +17,8 @@ import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.raqueveque.foodexample.databinding.ActivityMainBinding
 
 
@@ -29,6 +32,8 @@ class MainActivity : AppCompatActivity() {
 
     private var isKeyboardShowing = false
     private var vsble: Boolean = false
+
+    val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -195,19 +200,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setList() {
-        list.add(ModelExample("Pizza", "$400"))
-        list.add(ModelExample("Pizza", "$400"))
-        list.add(ModelExample("Pizza", "$400"))
-        list.add(ModelExample("asd", "$400"))
-        list.add(ModelExample("Hamburguesa", "$400"))
-        list.add(ModelExample("Empanada", "$400"))
-        list.add(ModelExample("Helado", "$400"))
-        list.add(ModelExample("Panchos", "$400"))
-        list.add(ModelExample("Pizza", "$400"))
-        list.add(ModelExample("Pizza", "$400"))
-        list.add(ModelExample("Pizza", "$400"))
-        list.add(ModelExample("Pizza", "$400"))
-        list.add(ModelExample("Pizza", "$400"))
+        db.collection("food").get().addOnSuccessListener{ resutl ->
+                for (document in resutl){
+                    val food = ModelExample(document.getString("food").toString(), document.getString("price").toString())
+                    list.add(food)
+            }
+        } .addOnFailureListener { exception ->
+            Log.w(TAG, "Error", exception)
+        }
+//        list.add(ModelExample("Pizza", "$400"))
+//        list.add(ModelExample("Pizza", "$400"))
+//        list.add(ModelExample("Pizza", "$400"))
+//        list.add(ModelExample("asd", "$400"))
+//        list.add(ModelExample("Hamburguesa", "$400"))
+//        list.add(ModelExample("Empanada", "$400"))
+//        list.add(ModelExample("Helado", "$400"))
+//        list.add(ModelExample("Panchos", "$400"))
+//        list.add(ModelExample("Pizza", "$400"))
+//        list.add(ModelExample("Pizza", "$400"))
+//        list.add(ModelExample("Pizza", "$400"))
+//        list.add(ModelExample("Pizza", "$400"))
+//        list.add(ModelExample("Pizza", "$400"))
     }
 
     private fun setupAdapter() {

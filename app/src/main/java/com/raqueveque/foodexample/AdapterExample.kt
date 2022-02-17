@@ -23,7 +23,7 @@ class AdapterExample: RecyclerView.Adapter<AdapterExample.ViewHolder>() {
     fun recyclerAdapter(list: MutableList<ModelExample>, context: Context){
         this.list = list
         this.context = context
-        originalList.addAll(list)
+        this.originalList = list
     }
 
     //ViewModel, lo extendemos de la clase OnItemClickListener
