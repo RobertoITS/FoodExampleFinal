@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--El layout original copiado!-->
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:background="?attr/colorSurface"
-    tools:context=".MainActivity"
+    tools:context=".DetailFragment"
     tools:ignore="MergeRootFrame">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -34,7 +33,7 @@
             app:toolbarId="@id/toolbar">
 
             <ImageView
-                android:id="@+id/detail_image"
+                android:id="@+id/image"
                 android:layout_width="match_parent"
                 android:layout_height="278dp"
                 android:contentDescription="@string/content_description"
@@ -42,17 +41,6 @@
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
                 android:src="@mipmap/logo"/>
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@android:color/transparent"
-                app:titleTextColor="?attr/colorOnSurface"
-                app:layout_collapseMode="pin"
-                app:contentInsetStartWithNavigation="0dp"
-                app:navigationIcon="@drawable/ic_detail_back"
-                app:menu="@menu/menu_detail" />
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -112,19 +100,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/plant_watering_header"
                 tools:text="every 7 days" />
-
-            <ImageView
-                android:id="@+id/gallery_nav"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:clickable="true"
-                android:contentDescription="@string/gallery_content_description"
-                android:focusable="true"
-                android:src="@drawable/ic_photo_library"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/plant_detail_name" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler"

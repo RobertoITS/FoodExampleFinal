@@ -44,7 +44,7 @@
                 app:titleTextColor="@android:color/transparent"
                 android:background="@android:color/transparent"
                 app:layout_collapseMode="pin"
-                app:menu="@menu/menu_search"/>
+                app:menu="@menu/menu_home"/>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/searchToolbar"

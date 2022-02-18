@@ -60,5 +60,5 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:2.4.1"
 
     //SearchView Personalizado
-    implementation 'com.miguelcatalan:materialsearchview:1.4.0'
+//    implementation("com.miguelcatalan:materialsearchview:1.4.0")
 }

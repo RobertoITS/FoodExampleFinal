@@ -9,16 +9,17 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
-import com.raqueveque.foodexample.databinding.FragmentMainBinding
 import java.util.*
 import kotlin.collections.ArrayList
-
+import com.raqueveque.foodexample.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
@@ -40,6 +41,8 @@ class MainFragment : Fragment() {
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
 
+        //Si no le damos el valor true, el menu no se muestra
+        setHasOptionsMenu(true)
 
         getData()
 
@@ -113,6 +116,7 @@ class MainFragment : Fragment() {
                 Toast.makeText(context,
                     "${listFood[position].name} ${listFood[position].price}",
                     Toast.LENGTH_SHORT).show()
+                    findNavController().navigate(R.id.action_mainFragment_to_detailFragment)
             }
         })
     }
@@ -121,6 +125,7 @@ class MainFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
         inflater.inflate(R.menu.menu_home, menu)
+        super.onCreateOptionsMenu(menu, inflater)
     }
     //Las opciones del click a los items del menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -144,12 +149,12 @@ class MainFragment : Fragment() {
     }
     //Pasamos los valores del searchView
     private fun setSearchToolbar() {
-        binding.searchToolbar.inflateMenu(R.menu.menu_home)
+        binding.searchToolbar.inflateMenu(R.menu.menu_search)
         searchMenu = binding.searchToolbar.menu
         binding.searchToolbar.setNavigationOnClickListener {
             circleRevealAnimation(isShow = false)
         }
-        itemSearch = searchMenu.findItem(R.id.action_search)
+        itemSearch = searchMenu.findItem(R.id.action_filter_search)
         MenuItemCompat.setOnActionExpandListener(itemSearch, object : MenuItemCompat.OnActionExpandListener{
             override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
                 //Hacer algo cuando expande
@@ -169,7 +174,7 @@ class MainFragment : Fragment() {
     //Inicializamos el searchView
     @SuppressLint("CutPasteId", "SoonBlockedPrivateApi")
     private fun initSearchView(){
-        val searchView = searchMenu.findItem(R.id.action_search).actionView as SearchView
+        val searchView = searchMenu.findItem(R.id.action_filter_search).actionView as SearchView
         //Activa/desactiva submit button en el teclado
         searchView.isSubmitButtonEnabled = false
         //Cambia el boton de cerrar
