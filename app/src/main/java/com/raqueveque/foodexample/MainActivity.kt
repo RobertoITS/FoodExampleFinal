@@ -3,9 +3,7 @@ package com.raqueveque.foodexample
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
-import android.content.ContentValues
 import android.graphics.Color
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -13,17 +11,17 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
-import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.*
+import com.google.firebase.firestore.EventListener
 import com.raqueveque.foodexample.databinding.ActivityMainBinding
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-//    private val adapter: AdapterExample = AdapterExample()
-//    private var list: MutableList<ModelExample> = mutableListOf()
+
     private lateinit var foodArrayList: ArrayList<Food>
     private lateinit var mAdapter: FoodAdapter
     private lateinit var db: FirebaseFirestore
@@ -32,13 +30,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var itemSearch: MenuItem
 
     private var vsble: Boolean = false
+    var isToolbarShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        setupAdapter()
 
         getData()
 
@@ -46,18 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         setSearchToolbar()
 
-        var isToolbarShown = false
-
         Utilities.setupUI(findViewById(R.id.rootActivity), this)
-
-        mAdapter.setOnItemClickListener(object : FoodAdapter.OnItemClickListener{
-            override fun onItemClick(position: Int) {
-                Toast.makeText(this@MainActivity,
-                    "${foodArrayList[position].name} ${foodArrayList[position].price}",
-                    Toast.LENGTH_SHORT).show()
-            }
-
-        })
 
         binding.plantDetailScrollview.setOnScrollChangeListener(
             NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, _, _ ->
@@ -76,8 +62,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getData() {
+        foodArrayList = arrayListOf()
         db = FirebaseFirestore.getInstance()
         db.collection("food").addSnapshotListener(object : EventListener<QuerySnapshot>{
+            @SuppressLint("NotifyDataSetChanged")
             override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                 if (error != null){
                     Log.e("FIREBASE ERROR", error.message.toString())
@@ -88,7 +76,7 @@ class MainActivity : AppCompatActivity() {
                         foodArrayList.add(dc.document.toObject(Food::class.java))
                     }
                 }
-                mAdapter.notifyDataSetChanged()
+                updateListFood(foodArrayList)
             }
         })
     }
@@ -148,13 +136,13 @@ class MainActivity : AppCompatActivity() {
          * a hacer desde el iniciador del searchView*/
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-//                adapter.search(query)
+                searchFood(query)
                 searchView.clearFocus()
-                return true
+                return false
             }
             override fun onQueryTextChange(newText: String): Boolean {
-//                adapter.search(newText)
-                return true
+                searchFood(newText)
+                return false
             }
         })
     }
@@ -215,11 +203,34 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupAdapter() {
-        binding.recycler.layoutManager = LinearLayoutManager(this)
-        binding.recycler.setHasFixedSize(true)
-        foodArrayList = arrayListOf()
-        mAdapter = FoodAdapter(foodArrayList)
+    private fun searchFood(query: String) {
+        var foodName = query
+        if (foodName.isNotEmpty()) foodName =
+            foodName.substring(0, 1).uppercase(Locale.getDefault()) + foodName.substring(1)
+                .lowercase(Locale.getDefault())
+        val results: ArrayList<Food> = ArrayList()
+        for (food in foodArrayList) {
+            if (food.name != null && food.name!!.contains(foodName)) {
+                results.add(food)
+            }
+        }
+        updateListFood(results)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun updateListFood(listFood: ArrayList<Food>) {
+        mAdapter = FoodAdapter(listFood)
+        binding.recycler.isNestedScrollingEnabled = false
         binding.recycler.adapter = mAdapter
+        binding.recycler.layoutManager = LinearLayoutManager(applicationContext)
+        mAdapter.notifyDataSetChanged()
+        mAdapter.setOnItemClickListener(object : FoodAdapter.OnItemClickListener{
+            override fun onItemClick(position: Int) {
+                Toast.makeText(this@MainActivity,
+                    "${foodArrayList[position].name} ${foodArrayList[position].price}",
+                    Toast.LENGTH_SHORT).show()
+            }
+
+        })
     }
 }
