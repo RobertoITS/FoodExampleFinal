@@ -28,7 +28,7 @@ class AdapterExample: RecyclerView.Adapter<AdapterExample.ViewHolder>() {
 
     //ViewModel, lo extendemos de la clase OnItemClickListener
     class ViewHolder(view: View, listener: OnItemClickListener): RecyclerView.ViewHolder(view) {
-        private val food = view.findViewById(R.id.description) as TextView
+        private val food = view.findViewById(R.id.name) as TextView
         private val price = view.findViewById(R.id.price) as TextView
 
         fun bind(list: ModelExample) {

@@ -13,34 +13,34 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
+import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.*
 import com.raqueveque.foodexample.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val adapter: AdapterExample = AdapterExample()
-    private var list: MutableList<ModelExample> = mutableListOf()
+//    private val adapter: AdapterExample = AdapterExample()
+//    private var list: MutableList<ModelExample> = mutableListOf()
+    private lateinit var foodArrayList: ArrayList<Food>
+    private lateinit var mAdapter: FoodAdapter
+    private lateinit var db: FirebaseFirestore
 
     private lateinit var searchMenu: Menu
     private lateinit var itemSearch: MenuItem
 
-    private var isKeyboardShowing = false
     private var vsble: Boolean = false
-
-    val db = Firebase.firestore
 
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityMainBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        setList()
-
         setupAdapter()
+
+        getData()
 
         setSupportActionBar(binding.toolbar)
 
@@ -50,14 +50,14 @@ class MainActivity : AppCompatActivity() {
 
         Utilities.setupUI(findViewById(R.id.rootActivity), this)
 
-        check(findViewById(R.id.rootActivity))
+        mAdapter.setOnItemClickListener(object : FoodAdapter.OnItemClickListener{
+            override fun onItemClick(position: Int) {
+                Toast.makeText(this@MainActivity,
+                    "${foodArrayList[position].name} ${foodArrayList[position].price}",
+                    Toast.LENGTH_SHORT).show()
+            }
 
-//        if (binding.searchToolbar.isVisible){
-//            if (Utilities.check(findViewById(R.id.rootActivity))){
-//                circleRevealAnimation(R.id.searchToolbar, isShow = false)
-//                Toast.makeText(this,"Se ve", Toast.LENGTH_SHORT).show()
-//            }
-//        }
+        })
 
         binding.plantDetailScrollview.setOnScrollChangeListener(
             NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, _, _ ->
@@ -73,6 +73,24 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         )
+    }
+
+    private fun getData() {
+        db = FirebaseFirestore.getInstance()
+        db.collection("food").addSnapshotListener(object : EventListener<QuerySnapshot>{
+            override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+                if (error != null){
+                    Log.e("FIREBASE ERROR", error.message.toString())
+                    return
+                }
+                for (dc: DocumentChange in value?.documentChanges!!){
+                    if (dc.type == DocumentChange.Type.ADDED){
+                        foodArrayList.add(dc.document.toObject(Food::class.java))
+                    }
+                }
+                mAdapter.notifyDataSetChanged()
+            }
+        })
     }
 
     private fun setSearchToolbar() {
@@ -130,12 +148,12 @@ class MainActivity : AppCompatActivity() {
          * a hacer desde el iniciador del searchView*/
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                adapter.search(query)
+//                adapter.search(query)
                 searchView.clearFocus()
                 return true
             }
             override fun onQueryTextChange(newText: String): Boolean {
-                adapter.search(newText)
+//                adapter.search(newText)
                 return true
             }
         })
@@ -197,68 +215,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setList() {
-        db.collection("food").get().addOnSuccessListener { documents ->
-            val listData = mutableListOf<ModelExample>()
-            for (document in documents){
-                val food = document.getString("food")
-                val image = document.getString("image")
-                val price = document.getString("price")
-                val allFood = ModelExample(food!!, image!!, price!!)
-                listData.add(allFood)
-            }
-            list.addAll(listData)
-        }
-    }
-
     private fun setupAdapter() {
-        binding.recycler.setHasFixedSize(true)
         binding.recycler.layoutManager = LinearLayoutManager(this)
-        binding.recycler.isNestedScrollingEnabled = false
-        adapter.recyclerAdapter(list, this)
-        binding.recycler.adapter = adapter
-        adapter.setOnItemClickListener(object : AdapterExample.OnItemClickListener{
-            override fun onItemClick(position: Int) {
-                Toast.makeText(this@MainActivity, "Hola $position", Toast.LENGTH_SHORT).show()
-                val food = list[position].food
-                val price = list[position].price
-            }
-
-        })
-    }
-
-    private fun onKeyboardVisibilityChanged(isOpen: Boolean) {
-//        Toast.makeText(this,"keyboard $isOpen",Toast.LENGTH_SHORT).show()
-        if (!isOpen){
-            circleRevealAnimation(R.id.searchToolbar, isShow = false)
-        }
-    }
-
-    private fun check(view: View) {
-        view.viewTreeObserver.addOnGlobalLayoutListener {
-            val r = Rect();
-            view.getWindowVisibleDisplayFrame(r);
-            val screenHeight = view.rootView.height;
-
-            // r.bottom is the position above soft keypad or device button.
-            // if keypad is shown, the r.bottom is smaller than that before.
-            val keypadHeight = screenHeight - r.bottom;
-
-            Log.d(ContentValues.TAG, "keypadHeight = $keypadHeight");
-
-            if (keypadHeight > screenHeight * 0.15) { // 0.15 ratio is perhaps enough to determine keypad height.
-                // keyboard is opened
-                if (!isKeyboardShowing) {
-                    isKeyboardShowing = true
-                    onKeyboardVisibilityChanged(true)
-                }
-            } else {
-                // keyboard is closed
-                if (isKeyboardShowing) {
-                    isKeyboardShowing = false
-                    onKeyboardVisibilityChanged(false)
-                }
-            }
-        }
+        binding.recycler.setHasFixedSize(true)
+        foodArrayList = arrayListOf()
+        mAdapter = FoodAdapter(foodArrayList)
+        binding.recycler.adapter = mAdapter
     }
 }
