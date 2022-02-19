@@ -29,6 +29,8 @@ class MainFragment : Fragment() {
     private lateinit var mAdapter: FoodAdapter
     private lateinit var db: FirebaseFirestore
 
+    private lateinit var checkedList: ArrayList<Food>
+
     private lateinit var searchMenu: Menu
     private lateinit var itemSearch: MenuItem
 
@@ -43,6 +45,8 @@ class MainFragment : Fragment() {
 
         //Si no le damos el valor true, el menu no se muestra
         setHasOptionsMenu(true)
+
+        checkedList = arrayListOf()
 
         getData()
 
@@ -111,12 +115,21 @@ class MainFragment : Fragment() {
         binding.recycler.adapter = mAdapter
         binding.recycler.layoutManager = LinearLayoutManager(context)
         mAdapter.notifyDataSetChanged()
+
+        /**Aqui sobreescribimos las funciones:*/
         mAdapter.setOnItemClickListener(object : FoodAdapter.OnItemClickListener{
             override fun onItemClick(position: Int) {
                 Toast.makeText(context,
                     "${listFood[position].name} ${listFood[position].price}",
                     Toast.LENGTH_SHORT).show()
                     findNavController().navigate(R.id.action_mainFragment_to_detailFragment)
+            }
+        })
+        mAdapter.setOnItemCheckListener(object : FoodAdapter.OnItemCheckListener{
+            override fun onItemCheck(position: Int, checkBox: View) {
+                val check = checkBox as CheckBox
+                if (check.isChecked) checkedList.add(foodArrayList[position])
+                else checkedList.remove(foodArrayList[position])
             }
         })
     }
@@ -132,7 +145,7 @@ class MainFragment : Fragment() {
         //Maneja la seleccion de items
         return when (item.itemId){
             R.id.action_status -> {
-                Toast.makeText(context, "Home Status Click", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, checkedList.size.toString(), Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.action_search -> {
@@ -243,5 +256,4 @@ class MainFragment : Fragment() {
         // start the animation
         anim.start()
     }
-
 }
