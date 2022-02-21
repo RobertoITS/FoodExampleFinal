@@ -1,4 +1,4 @@
-package com.raqueveque.foodexample
+package com.raqueveque.foodexample.main.ui
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -17,9 +17,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
+import com.raqueveque.foodexample.R
+import com.raqueveque.foodexample.Utilities
 import java.util.*
 import kotlin.collections.ArrayList
 import com.raqueveque.foodexample.databinding.FragmentMainBinding
+import com.raqueveque.foodexample.main.adapter.FoodAdapter
+import com.raqueveque.foodexample.main.constructor.Food
 
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
@@ -86,7 +90,11 @@ class MainFragment : Fragment() {
                 }
                 for (dc: DocumentChange in value?.documentChanges!!){
                     if (dc.type == DocumentChange.Type.ADDED){
-                        foodArrayList.add(dc.document.toObject(Food::class.java))
+                        val item = Food(dc.document.get("image")!!.toString(),
+                            dc.document.get("name")!!.toString(),
+                            dc.document.get("price") as Long?, dc.document.id)
+//                        foodArrayList.add(dc.document.toObject(Food::class.java))
+                        foodArrayList.add(item)
                     }
                 }
                 updateListFood(foodArrayList)
@@ -120,7 +128,7 @@ class MainFragment : Fragment() {
         mAdapter.setOnItemClickListener(object : FoodAdapter.OnItemClickListener{
             override fun onItemClick(position: Int) {
                 Toast.makeText(context,
-                    "${listFood[position].name} ${listFood[position].price}",
+                    "${listFood[position].name} ${listFood[position].id}",
                     Toast.LENGTH_SHORT).show()
                     findNavController().navigate(R.id.action_mainFragment_to_detailFragment)
             }

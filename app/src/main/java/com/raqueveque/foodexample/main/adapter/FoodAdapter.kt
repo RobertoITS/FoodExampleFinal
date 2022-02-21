@@ -1,4 +1,4 @@
-package com.raqueveque.foodexample
+package com.raqueveque.foodexample.main.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,8 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.raqueveque.foodexample.R
+import com.raqueveque.foodexample.main.constructor.Food
 import com.squareup.picasso.Picasso
 
 class FoodAdapter(private var foodList: ArrayList<Food>): RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
@@ -31,7 +33,8 @@ class FoodAdapter(private var foodList: ArrayList<Food>): RecyclerView.Adapter<F
 
     /**En el ViewHolder le pasamos al constructor primario el listener del click y el check*/
     class FoodViewHolder(itemView: View, listener: OnItemClickListener,
-                         checked: OnItemCheckListener):
+                         checked: OnItemCheckListener
+    ):
         RecyclerView.ViewHolder(itemView){
         val image: ImageView = itemView.findViewById(R.id.image)
         val name: TextView = itemView.findViewById(R.id.name)
@@ -58,7 +61,7 @@ class FoodAdapter(private var foodList: ArrayList<Food>): RecyclerView.Adapter<F
         val item = foodList[position]
         Picasso.get().load(item.image).into(holder.image)
         holder.name.text = item.name
-        holder.price.text = item.price
+        holder.price.text = item.price.toString()
     }
 
     override fun getItemCount(): Int {
