@@ -7,7 +7,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.*
 import com.raqueveque.foodexample.databinding.FragmentDetailBinding
 import com.raqueveque.foodexample.detail.adapter.VariationsAdapter
@@ -57,11 +59,15 @@ class DetailFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun updateList(variationsList: ArrayList<VariationsExtras>) {
         vAdapter = VariationsAdapter(variationsList)
-        binding.variationRecycler.isNestedScrollingEnabled = false
+//        binding.variationRecycler.isNestedScrollingEnabled = false
         binding.variationRecycler.adapter = vAdapter
-        binding.variationRecycler.layoutManager = LinearLayoutManager(context)
+//        binding.variationRecycler.layoutManager = LinearLayoutManager(context)
+        //Usamos el gridlayoutmanager para agrandar el layout y que se ajuste a la pantalla
+        //La cantidad de filas la define el tamaño de la lista, en modo horizontal
+        GridLayoutManager(context, variationsList.size, RecyclerView.HORIZONTAL, false).apply {
+            binding.variationRecycler.layoutManager = this
+        }
         vAdapter.notifyDataSetChanged()
-
     }
 
 }
