@@ -29,7 +29,7 @@ class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var foodArrayList: ArrayList<Food>
+    private var foodArrayList: ArrayList<Food> = arrayListOf()
     private lateinit var mAdapter: FoodAdapter
     private lateinit var db: FirebaseFirestore
 
@@ -79,27 +79,34 @@ class MainFragment : Fragment() {
     }
     //Obtenemos los datos
     private fun getData() {
-        foodArrayList = arrayListOf()
-        db = FirebaseFirestore.getInstance()
-        db.collection("food").addSnapshotListener(object : EventListener<QuerySnapshot> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
-                if (error != null){
-                    Log.e("FIREBASE ERROR", error.message.toString())
-                    return
-                }
-                for (dc: DocumentChange in value?.documentChanges!!){
-                    if (dc.type == DocumentChange.Type.ADDED){
-                        val item = Food(dc.document.get("image")!!.toString(),
-                            dc.document.get("name")!!.toString(),
-                            dc.document.get("price") as Long?, dc.document.id)
-//                        foodArrayList.add(dc.document.toObject(Food::class.java))
-                        foodArrayList.add(item)
+        /**Comprobamos que la lista este vacia para
+         * realizar una sola vez la consulta a la base
+         * de datos, evitamos la sobrecarga de carga/descarga*/
+        if (foodArrayList.size == 0) {
+            db = FirebaseFirestore.getInstance()
+            db.collection("food").addSnapshotListener(object : EventListener<QuerySnapshot> {
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+                    if (error != null) {
+                        Log.e("FIREBASE ERROR", error.message.toString())
+                        return
                     }
+                    for (dc: DocumentChange in value?.documentChanges!!) {
+                        if (dc.type == DocumentChange.Type.ADDED) {
+                            val item = Food(
+                                dc.document.get("image")!!.toString(),
+                                dc.document.get("name")!!.toString(),
+                                dc.document.get("price") as Long?,
+                                //Pasamos el ID del documento
+                                dc.document.id
+                            )
+                            foodArrayList.add(item)
+                        }
+                    }
+                    updateListFood(foodArrayList)
                 }
-                updateListFood(foodArrayList)
-            }
-        })
+            })
+        } else updateListFood(foodArrayList)
     }
     //El Buscardor
     private fun searchFood(query: String) {
@@ -127,10 +134,14 @@ class MainFragment : Fragment() {
         /**Aqui sobreescribimos las funciones:*/
         mAdapter.setOnItemClickListener(object : FoodAdapter.OnItemClickListener{
             override fun onItemClick(position: Int) {
-                Toast.makeText(context,
-                    "${listFood[position].name} ${listFood[position].id}",
-                    Toast.LENGTH_SHORT).show()
-                    findNavController().navigate(R.id.action_mainFragment_to_detailFragment)
+                //Enviamos los argumentos al siguiente fragment
+                val action = MainFragmentDirections.actionMainFragmentToDetailFragment(
+                    listFood[position].name,
+                    listFood[position].price!!,
+                    listFood[position].id,
+                    listFood[position].image
+                )
+                    findNavController().navigate(action)
             }
         })
         mAdapter.setOnItemCheckListener(object : FoodAdapter.OnItemCheckListener{

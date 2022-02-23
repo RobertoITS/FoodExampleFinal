@@ -69,7 +69,7 @@
             android:layout_margin="16dp">
 
             <TextView
-                android:id="@+id/plant_detail_name"
+                android:id="@+id/name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -96,7 +96,7 @@
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/plant_detail_name" />
+                app:layout_constraintTop_toBottomOf="@id/name" />
 
             <TextView
                 android:id="@+id/plant_watering"
@@ -187,25 +187,29 @@
                     android:gravity="center_horizontal">
 
                     <Button
+                        android:id="@+id/less"
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         app:icon="@drawable/ic_horizontal_rule_24"
                         app:iconTint="@color/black"
+                        android:foregroundTint="@color/black"
                         android:background="@android:color/transparent"/>
 
                     <EditText
+                        android:id="@+id/quantity"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="01"
                         android:layout_marginHorizontal="20dp"
                         android:inputType="number"
                         android:textSize="23sp"/>
 
                     <Button
+                        android:id="@+id/more"
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         app:icon="@drawable/ic_add_24"
                         app:iconTint="@color/black"
+                        android:foregroundTint="@color/black"
                         android:background="@android:color/transparent"/>
 
                 </LinearLayout>
@@ -277,6 +281,7 @@
                         android:text="Total"/>
 
                     <TextView
+                        android:id="@+id/price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

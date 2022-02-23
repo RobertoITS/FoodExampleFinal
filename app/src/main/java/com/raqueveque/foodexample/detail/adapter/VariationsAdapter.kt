@@ -3,29 +3,46 @@ package com.raqueveque.foodexample.detail.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioButton
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.raqueveque.foodexample.R
+import com.raqueveque.foodexample.databinding.VariationsCardBinding
 import com.raqueveque.foodexample.detail.constructor.VariationsExtras
 
+
+@Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
 class VariationsAdapter(private var list: ArrayList<VariationsExtras>): RecyclerView.Adapter<VariationsAdapter.VariationsExtrasViewHolder>() {
 
-    class VariationsExtrasViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val radioButton: RadioButton = itemView.findViewById(R.id.radioButton)
-        val price: TextView = itemView.findViewById(R.id.price)
+    /**Creamos los listener para el check*/
+    lateinit var mChecked: OnItemSingleCheckListener
+    interface OnItemSingleCheckListener{
+        fun onItemSingleCheck(position: Int, radioButton: View)
+    }
+    fun setOnSingleItemCheckListener(check: OnItemSingleCheckListener){
+        mChecked = check
+    }
 
+    /**El ViewHolder, le pasamos como constructor primario el item (usamos viewBinding) y el listener*/
+    class VariationsExtrasViewHolder(val binding: VariationsCardBinding, check: OnItemSingleCheckListener): RecyclerView.ViewHolder(binding.root) {
+
+        /**Inicializamos las funciones del listener*/
+        init {
+            binding.radioButton.setOnCheckedChangeListener { _, _ ->
+                check.onItemSingleCheck(layoutPosition, binding.radioButton)
+            }
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VariationsExtrasViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.variations_card, parent, false)
-        return VariationsExtrasViewHolder(itemView)
+        val binding = VariationsCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return VariationsExtrasViewHolder(binding, mChecked)
     }
 
     override fun onBindViewHolder(holder: VariationsExtrasViewHolder, position: Int) {
-        val item = list[position]
-        holder.price.text = item.price.toString()
-        holder.radioButton.text = item.type
+        val binding = holder.binding
+        binding.price.text = list[position].price.toString()
+        binding.radioButton.text = list[position].type
+        binding.radioButton.tag = position
+        /**Damos el check al primer item*/
+        if (position == 0) binding.radioButton.isChecked = true
     }
 
     override fun getItemCount(): Int {
