@@ -93,11 +93,12 @@ class MainFragment : Fragment() {
                     }
                     for (dc: DocumentChange in value?.documentChanges!!) {
                         if (dc.type == DocumentChange.Type.ADDED) {
+//                            foodArrayList.add(dc.document.toObject(Food::class.java))
                             val item = Food(
                                 dc.document.get("image")!!.toString(),
                                 dc.document.get("name")!!.toString(),
                                 dc.document.get("price") as Long?,
-                                //Pasamos el ID del documento
+                                //Pasamos el Id del documento
                                 dc.document.id
                             )
                             foodArrayList.add(item)
@@ -106,7 +107,9 @@ class MainFragment : Fragment() {
                     updateListFood(foodArrayList)
                 }
             })
-        } else updateListFood(foodArrayList)
+        } else {
+            updateListFood(foodArrayList)
+        }
     }
     //El Buscardor
     private fun searchFood(query: String) {
@@ -126,7 +129,7 @@ class MainFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun updateListFood(listFood: ArrayList<Food>) {
         mAdapter = FoodAdapter(listFood)
-        binding.recycler.isNestedScrollingEnabled = false
+//        binding.recycler.isNestedScrollingEnabled = false
         binding.recycler.adapter = mAdapter
         binding.recycler.layoutManager = LinearLayoutManager(context)
         mAdapter.notifyDataSetChanged()
@@ -147,8 +150,16 @@ class MainFragment : Fragment() {
         mAdapter.setOnItemCheckListener(object : FoodAdapter.OnItemCheckListener{
             override fun onItemCheck(position: Int, checkBox: View) {
                 val check = checkBox as CheckBox
-                if (check.isChecked) checkedList.add(foodArrayList[position])
-                else checkedList.remove(foodArrayList[position])
+                if (check.isChecked) {
+                    checkedList.add(foodArrayList[position])
+                    //Esta variable maneja el estado del checkbox. Ver adaptador (OnBindViewHolder)
+                    listFood[position].check = true
+                }
+                else {
+                    checkedList.remove(foodArrayList[position])
+                    listFood[position].check = false
+                }
+
             }
         })
     }

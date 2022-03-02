@@ -46,6 +46,7 @@ class DetailFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     private fun quantityPicker() {
         //Colocamos por defecto 1 en el edittext
         binding.quantity.setText("1")
@@ -57,13 +58,13 @@ class DetailFragment : Fragment() {
                 quantity -= 1
             binding.quantity.setText(quantity.toString())
             val total = quantity * price
-            binding.price.text = total.toString()
+            binding.price.text = "$$total"
         }
         binding.more.setOnClickListener {
             quantity += 1
             binding.quantity.setText(quantity.toString())
             val total = quantity * price
-            binding.price.text = total.toString()
+            binding.price.text = "$$total"
         }
     }
 

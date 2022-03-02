@@ -39,7 +39,7 @@ class FoodAdapter(private var foodList: ArrayList<Food>): RecyclerView.Adapter<F
         val image: ImageView = itemView.findViewById(R.id.image)
         val name: TextView = itemView.findViewById(R.id.name)
         val price: TextView = itemView.findViewById(R.id.price)
-        private val checkBox: CheckBox = itemView.findViewById(R.id.isChecked)
+        val checkBox: CheckBox = itemView.findViewById(R.id.isChecked)
 
         /**Inicializamos el click y el check*/
         init {
@@ -62,6 +62,10 @@ class FoodAdapter(private var foodList: ArrayList<Food>): RecyclerView.Adapter<F
         Picasso.get().load(item.image).into(holder.image)
         holder.name.text = item.name
         holder.price.text = item.price.toString()
+        if (item.check){
+            //Si el objeto tiene esta condicion, el checkbox pasa a chequeado
+            holder.checkBox.isChecked = true
+        }
     }
 
     override fun getItemCount(): Int {
