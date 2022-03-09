@@ -14,6 +14,7 @@ import android.widget.EditText
 import androidx.annotation.ContentView
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.FragmentActivity
+import com.raqueveque.foodexample.detail.ImageSlider
 
 object Utilities {
     //Esconder el teclado

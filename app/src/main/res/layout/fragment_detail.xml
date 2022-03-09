@@ -32,15 +32,12 @@
             app:titleEnabled="false"
             app:toolbarId="@id/toolbar">
 
-            <ImageView
-                android:id="@+id/image"
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/viewPagerImage"
                 android:layout_width="match_parent"
                 android:layout_height="278dp"
-                android:contentDescription="@string/content_description"
                 android:fitsSystemWindows="true"
-                android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax"
-                android:src="@mipmap/logo"/>
+                app:layout_collapseMode="parallax"/>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -307,6 +304,6 @@
         app:shapeAppearance="@style/ShapeAppearance.Sunflower.FAB"
         app:layout_anchor="@id/appbar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/ic_plus" />
+        app:srcCompat="@drawable/ic_add_24" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

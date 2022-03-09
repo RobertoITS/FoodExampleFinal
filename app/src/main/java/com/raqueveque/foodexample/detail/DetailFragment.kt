@@ -2,27 +2,36 @@ package com.raqueveque.foodexample.detail
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RadioButton
-import androidx.core.content.contentValuesOf
+import android.widget.Toast
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.CompositePageTransformer
+import androidx.viewpager2.widget.MarginPageTransformer
+import androidx.viewpager2.widget.ViewPager2
 import com.google.firebase.firestore.*
+import com.raqueveque.foodexample.Utilities
 import com.raqueveque.foodexample.databinding.FragmentDetailBinding
 import com.raqueveque.foodexample.detail.adapter.VariationsAdapter
 import com.raqueveque.foodexample.detail.constructor.VariationsExtras
-import com.squareup.picasso.Picasso
 
 class DetailFragment : Fragment() {
+
+    private lateinit var viewPager2: ViewPager2
+    private val sliderHandler = Handler()
+
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var variationsList: ArrayList<VariationsExtras>
+    private lateinit var imagesList: ArrayList<ImageSlider>
     private lateinit var db: FirebaseFirestore
     private lateinit var vAdapter: VariationsAdapter
 
@@ -39,11 +48,59 @@ class DetailFragment : Fragment() {
 
         getData()
 
+        getImages()
+
         initFragment()
 
         quantityPicker()
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //Se tiene que colocar una vez que se crea la vista
+        viewPager2 = binding.viewPagerImage
+
+        viewPager2.adapter = SliderAdapter(imagesList, viewPager2)
+
+        viewPager2.clipToPadding = false
+        viewPager2.clipChildren = false
+        viewPager2.offscreenPageLimit = 3
+        viewPager2.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+
+        val compositePageTransformer = CompositePageTransformer()
+        compositePageTransformer.addTransformer(MarginPageTransformer(30))
+        compositePageTransformer.addTransformer { page, position ->
+            val r = 1 - kotlin.math.abs(position)
+            page.scaleY = 0.85f + r * 0.25f
+        }
+
+        viewPager2.setPageTransformer(compositePageTransformer)
+        //Hasta aca, ver las animaciones
+
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                sliderHandler.removeCallbacks(sliderRunnable)
+                sliderHandler.postDelayed(sliderRunnable, 3000)
+            }
+        })
+    }
+
+    private val sliderRunnable = Runnable {
+        viewPager2.currentItem = viewPager2.currentItem + 1
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sliderHandler.postDelayed(sliderRunnable, 3000)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sliderHandler.postDelayed(sliderRunnable, 3000)
     }
 
     @SuppressLint("SetTextI18n")
@@ -70,7 +127,6 @@ class DetailFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun initFragment() {
-        Picasso.get().load(args.image).into(binding.image)
         binding.name.text = args.name
         binding.price.text = "$${args.price}"
     }
@@ -93,6 +149,38 @@ class DetailFragment : Fragment() {
                 updateList(variationsList)
             }
         })
+    }
+
+    private fun getImages(){
+        TODO("el snapshot esta vacio, razones? ni idea")
+        imagesList = arrayListOf()
+        db = FirebaseFirestore.getInstance()
+        db.collection("food/${args.id}/images/").addSnapshotListener(object : EventListener<QuerySnapshot> {
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
+                if (value!!.isEmpty){
+                    Toast.makeText(context, "Vacio", Toast.LENGTH_SHORT).show()
+                }
+                if (error != null){
+                    Log.e("FIREBASE ERROR", error.message.toString())
+                    return
+                }
+                for (dc: DocumentChange in value?.documentChanges!!){
+                    if (dc.type == DocumentChange.Type.ADDED){
+                        imagesList.add(dc.document.toObject(ImageSlider::class.java))
+                    }
+                }
+            }
+        })
+//        db.collection("food/${args.id}/images/").get().addOnSuccessListener {
+//            if (it.isEmpty){
+//                Toast.makeText(context, "Vacio", Toast.LENGTH_SHORT).show()
+//            }
+//            for (dc in it){
+//                val image = dc.toObject(ImageSlider::class.java)
+//                imagesList.add(image)
+//            }
+//        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
