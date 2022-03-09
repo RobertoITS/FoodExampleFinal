@@ -11,7 +11,7 @@ import com.raqueveque.foodexample.R
 import com.raqueveque.foodexample.detail.SliderAdapter.*
 import com.squareup.picasso.Picasso
 
-class SliderAdapter (items: MutableList<ImageSlider>, viewPager2: ViewPager2): RecyclerView.Adapter<SliderViewHolder>() {
+class SliderAdapter (items: ArrayList<ImageSlider>, viewPager2: ViewPager2): RecyclerView.Adapter<SliderViewHolder>() {
 
     private val sliderItems: List<ImageSlider>
     //

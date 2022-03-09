@@ -3,11 +3,11 @@
 
     <!-- To see how these attributes are used, please visit https://material.io/develop/android/theming/color/ -->
 
-    <style name="TextAppearance.Sunflower.Toolbar.Text" parent="TextAppearance.MaterialComponents.Headline5" >
+    <style name="TextAppearance.FoodExample.Toolbar.Text" parent="TextAppearance.MaterialComponents.Headline5" >
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
-    <style name="ShapeAppearance.Sunflower.FAB" parent="ShapeAppearance.MaterialComponents">
+    <style name="ShapeAppearance.FoodExample.FAB" parent="ShapeAppearance.MaterialComponents">
         <item name="cornerFamily">rounded</item>
 
         <item name="cornerSizeTopLeft">0dp</item>

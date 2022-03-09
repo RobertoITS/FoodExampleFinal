@@ -85,7 +85,6 @@ class MainFragment : Fragment() {
         if (foodArrayList.size == 0) {
             db = FirebaseFirestore.getInstance()
             db.collection("food").addSnapshotListener(object : EventListener<QuerySnapshot> {
-                @SuppressLint("NotifyDataSetChanged")
                 override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
                     if (error != null) {
                         Log.e("FIREBASE ERROR", error.message.toString())
@@ -93,7 +92,6 @@ class MainFragment : Fragment() {
                     }
                     for (dc: DocumentChange in value?.documentChanges!!) {
                         if (dc.type == DocumentChange.Type.ADDED) {
-//                            foodArrayList.add(dc.document.toObject(Food::class.java))
                             val item = Food(
                                 dc.document.get("image")!!.toString(),
                                 dc.document.get("name")!!.toString(),

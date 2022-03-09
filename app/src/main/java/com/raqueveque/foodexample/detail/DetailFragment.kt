@@ -12,12 +12,14 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.firebase.firestore.*
 import com.raqueveque.foodexample.databinding.FragmentDetailBinding
+import com.raqueveque.foodexample.detail.adapter.ExtrasAdapter
 import com.raqueveque.foodexample.detail.adapter.VariationsAdapter
 import com.raqueveque.foodexample.detail.constructor.VariationsExtras
 
@@ -31,8 +33,11 @@ class DetailFragment : Fragment() {
 
     private lateinit var variationsList: ArrayList<VariationsExtras>
     private lateinit var imagesList: ArrayList<ImageSlider>
+    private lateinit var othersList: ArrayList<VariationsExtras>
     private lateinit var db: FirebaseFirestore
     private lateinit var vAdapter: VariationsAdapter
+    private lateinit var eAdapter: ExtrasAdapter
+    private lateinit var sAdapter: SliderAdapter
 
     private val args: DetailFragmentArgs by navArgs()
 
@@ -54,13 +59,18 @@ class DetailFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         //Se tiene que colocar una vez que se crea la vista
-        viewPager2 = binding.viewPagerImage
+        viewPager2 = binding.imageSliderViewPager
 
-        viewPager2.adapter = SliderAdapter(imagesList, viewPager2)
+        sAdapter = SliderAdapter(imagesList, viewPager2)
+
+        viewPager2.adapter = sAdapter
+
+        sAdapter.notifyDataSetChanged()
 
         viewPager2.clipToPadding = false
         viewPager2.clipChildren = false
@@ -129,6 +139,7 @@ class DetailFragment : Fragment() {
     }
 
     private fun getData() {
+        othersList = arrayListOf()
         variationsList = arrayListOf()
         imagesList = arrayListOf()
         db = FirebaseFirestore.getInstance()
@@ -138,7 +149,7 @@ class DetailFragment : Fragment() {
             }
             updateList(variationsList)
         }
-        db.collection("food/${args.id}/images").get().addOnSuccessListener {
+        db.collection("food/${args.id}/images/").get().addOnSuccessListener {
             if (it.isEmpty){
                 Toast.makeText(context, "Vacio", Toast.LENGTH_SHORT).show()
             }
@@ -147,10 +158,24 @@ class DetailFragment : Fragment() {
                 imagesList.add(image)
             }
         }
+        db.collection("food/${args.id}/extra/").get().addOnSuccessListener {
+            if (it.isEmpty){
+                Toast.makeText(context, "Vacio", Toast.LENGTH_SHORT).show()
+            }
+            for (dc in it){
+                othersList.add(dc.toObject(VariationsExtras::class.java))
+            }
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun updateList(variationsList: ArrayList<VariationsExtras>) {
+
+        eAdapter = ExtrasAdapter(othersList)
+        binding.others.layoutManager = LinearLayoutManager(context)
+        binding.others.adapter = eAdapter
+        eAdapter.notifyDataSetChanged()
+
         vAdapter = VariationsAdapter(variationsList)
         binding.variationRecycler.isNestedScrollingEnabled = false
         binding.variationRecycler.adapter = vAdapter

@@ -23,7 +23,7 @@
             android:fitsSystemWindows="true"
             app:contentScrim="@color/teal_700"
             app:collapsedTitleGravity="center"
-            app:collapsedTitleTextAppearance="@style/TextAppearance.Sunflower.Toolbar.Text"
+            app:collapsedTitleTextAppearance="@style/TextAppearance.FoodExample.Toolbar.Text"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
             app:title="@string/app_name">
 

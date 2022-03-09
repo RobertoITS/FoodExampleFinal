@@ -20,24 +20,24 @@
         android:animateLayoutChanges="true">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorSurface"
             app:statusBarScrim="?attr/colorSurface"
             app:collapsedTitleGravity="center"
-            app:collapsedTitleTextAppearance="@style/TextAppearance.Sunflower.Toolbar.Text"
+            app:collapsedTitleTextAppearance="?attr/colorOnSurface"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:titleEnabled="false"
             app:toolbarId="@id/toolbar">
 
             <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/viewPagerImage"
+                android:id="@+id/imageSliderViewPager"
                 android:layout_width="match_parent"
                 android:layout_height="278dp"
                 android:fitsSystemWindows="true"
-                app:layout_collapseMode="parallax"/>
+                app:layout_collapseMode="parallax"
+                android:src="@mipmap/logo"/>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -53,7 +53,6 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
-        android:id="@+id/plant_detail_scrollview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
@@ -80,33 +79,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/plant_watering_header"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:gravity="center_horizontal"
-                android:text="@string/needs_prefix"
-                android:textColor="?attr/colorAccent"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/name" />
-
-            <TextView
-                android:id="@+id/plant_watering"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:gravity="center_horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/plant_watering_header"
-                tools:text="every 7 days" />
-
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -116,7 +88,7 @@
                 android:minHeight="555dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/plant_watering">
+                app:layout_constraintTop_toBottomOf="@id/name">
 
                 <LinearLayout
                     android:id="@+id/divisor1"
@@ -128,21 +100,19 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/variation"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight=".5"
                         android:text="Variation"
-                        android:textSize="23sp"
+                        android:textSize="20sp"
                         android:layout_marginVertical="10dp"/>
 
                     <TextView
-                        android:id="@+id/required"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight=".5"
                         android:text="Required"
-                        android:textSize="20sp"
+                        android:textSize="12sp"
                         android:textAlignment="textEnd"
                         android:textColor="@color/red"
                         android:textStyle="italic"
@@ -158,10 +128,33 @@
                     app:layout_constraintEnd_toEndOf="parent"/>
 
                 <LinearLayout
-                    android:id="@+id/divisor2"
+                    android:id="@+id/divisor1.5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@+id/variation_recycler"
+                    app:layout_constraintBottom_toTopOf="@+id/divisor2"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        android:text="Others"
+                        android:layout_marginVertical="10dp"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/others"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/divisor2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/divisor1.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent">
 
@@ -169,14 +162,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Quantity"
-                        android:textSize="23sp"
+                        android:textSize="20sp"
                         android:layout_marginVertical="10dp"/>
 
                 </LinearLayout>
 
                 <LinearLayout
+                    android:elevation="20dp"
+                    android:background="@drawable/shape_01"
                     android:id="@+id/divisor3"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintTop_toBottomOf="@+id/divisor2"
                     app:layout_constraintStart_toStartOf="parent"
@@ -221,16 +216,15 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="23sp"
+                        android:textSize="20sp"
                         android:text="Others"
                         android:layout_marginVertical="10dp"/>
 
                     <EditText
-                        android:id="@+id/editTextTextMultiLine"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="Let us know if you have specific things in mind \n \n e.g. less spices, no mayo, etc."
-                        android:textSize="20sp"
+                        android:textSize="15sp"
                         android:ems="10"
                         android:gravity="start|top"
                         android:inputType="textMultiLine"/>
@@ -250,7 +244,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="If the product is not available"
-                        android:textSize="23sp"
+                        android:textSize="20sp"
                         android:layout_marginVertical="10dp"/>
 
                     <AutoCompleteTextView
@@ -274,7 +268,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textSize="23sp"
+                        android:textSize="20sp"
                         android:text="Total"/>
 
                     <TextView
@@ -282,7 +276,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textSize="30sp"
+                        android:textSize="23sp"
                         android:text="$350"
                         android:textAlignment="textEnd"/>
 
@@ -295,13 +289,12 @@
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab"
         style="@style/Widget.MaterialComponents.FloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:tint="@android:color/white"
-        app:shapeAppearance="@style/ShapeAppearance.Sunflower.FAB"
+        app:shapeAppearance="@style/ShapeAppearance.FoodExample.FAB"
         app:layout_anchor="@id/appbar"
         app:layout_anchorGravity="bottom|end"
         app:srcCompat="@drawable/ic_add_24" />
