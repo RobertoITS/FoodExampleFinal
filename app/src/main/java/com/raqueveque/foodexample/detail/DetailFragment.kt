@@ -17,7 +17,6 @@ import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
 import com.google.firebase.firestore.*
-import com.raqueveque.foodexample.Utilities
 import com.raqueveque.foodexample.databinding.FragmentDetailBinding
 import com.raqueveque.foodexample.detail.adapter.VariationsAdapter
 import com.raqueveque.foodexample.detail.constructor.VariationsExtras
@@ -47,8 +46,6 @@ class DetailFragment : Fragment() {
         _binding = FragmentDetailBinding.inflate(layoutInflater, container, false)
 
         getData()
-
-        getImages()
 
         initFragment()
 
@@ -133,54 +130,23 @@ class DetailFragment : Fragment() {
 
     private fun getData() {
         variationsList = arrayListOf()
-        db = FirebaseFirestore.getInstance()
-        db.collection("food/${args.id}/variations/").addSnapshotListener(object : EventListener<QuerySnapshot> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
-                if (error != null){
-                    Log.e("FIREBASE ERROR", error.message.toString())
-                    return
-                }
-                for (dc: DocumentChange in value?.documentChanges!!){
-                    if (dc.type == DocumentChange.Type.ADDED){
-                        variationsList.add(dc.document.toObject(VariationsExtras::class.java))
-                    }
-                }
-                updateList(variationsList)
-            }
-        })
-    }
-
-    private fun getImages(){
-        TODO("el snapshot esta vacio, razones? ni idea")
         imagesList = arrayListOf()
         db = FirebaseFirestore.getInstance()
-        db.collection("food/${args.id}/images/").addSnapshotListener(object : EventListener<QuerySnapshot> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
-                if (value!!.isEmpty){
-                    Toast.makeText(context, "Vacio", Toast.LENGTH_SHORT).show()
-                }
-                if (error != null){
-                    Log.e("FIREBASE ERROR", error.message.toString())
-                    return
-                }
-                for (dc: DocumentChange in value?.documentChanges!!){
-                    if (dc.type == DocumentChange.Type.ADDED){
-                        imagesList.add(dc.document.toObject(ImageSlider::class.java))
-                    }
-                }
+        db.collection("food/${args.id}/variations/").get().addOnSuccessListener {
+            for (dc in it){
+                variationsList.add(dc.toObject(VariationsExtras::class.java))
             }
-        })
-//        db.collection("food/${args.id}/images/").get().addOnSuccessListener {
-//            if (it.isEmpty){
-//                Toast.makeText(context, "Vacio", Toast.LENGTH_SHORT).show()
-//            }
-//            for (dc in it){
-//                val image = dc.toObject(ImageSlider::class.java)
-//                imagesList.add(image)
-//            }
-//        }
+            updateList(variationsList)
+        }
+        db.collection("food/${args.id}/images").get().addOnSuccessListener {
+            if (it.isEmpty){
+                Toast.makeText(context, "Vacio", Toast.LENGTH_SHORT).show()
+            }
+            for (dc in it){
+                val image = dc.toObject(ImageSlider::class.java)
+                imagesList.add(image)
+            }
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
