@@ -22,6 +22,7 @@ import com.raqueveque.foodexample.Utilities
 import java.util.*
 import kotlin.collections.ArrayList
 import com.raqueveque.foodexample.databinding.FragmentMainBinding
+import com.raqueveque.foodexample.detail.ImageSlider
 import com.raqueveque.foodexample.main.adapter.FoodAdapter
 import com.raqueveque.foodexample.main.constructor.Food
 

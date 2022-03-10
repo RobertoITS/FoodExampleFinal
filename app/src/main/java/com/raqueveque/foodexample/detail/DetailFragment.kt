@@ -3,7 +3,6 @@ package com.raqueveque.foodexample.detail
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -33,7 +32,7 @@ class DetailFragment : Fragment() {
 
     private lateinit var variationsList: ArrayList<VariationsExtras>
     private lateinit var imagesList: ArrayList<ImageSlider>
-    private lateinit var othersList: ArrayList<VariationsExtras>
+    private lateinit var extrasList: ArrayList<VariationsExtras>
     private lateinit var db: FirebaseFirestore
     private lateinit var vAdapter: VariationsAdapter
     private lateinit var eAdapter: ExtrasAdapter
@@ -50,7 +49,11 @@ class DetailFragment : Fragment() {
     ): View {
         _binding = FragmentDetailBinding.inflate(layoutInflater, container, false)
 
-        getData()
+        db = FirebaseFirestore.getInstance()
+
+        getVariations()
+
+        getExtras()
 
         initFragment()
 
@@ -66,11 +69,7 @@ class DetailFragment : Fragment() {
         //Se tiene que colocar una vez que se crea la vista
         viewPager2 = binding.imageSliderViewPager
 
-        sAdapter = SliderAdapter(imagesList, viewPager2)
-
-        viewPager2.adapter = sAdapter
-
-        sAdapter.notifyDataSetChanged()
+        getImages()
 
         viewPager2.clipToPadding = false
         viewPager2.clipChildren = false
@@ -138,17 +137,8 @@ class DetailFragment : Fragment() {
         binding.price.text = "$${args.price}"
     }
 
-    private fun getData() {
-        othersList = arrayListOf()
-        variationsList = arrayListOf()
+    private fun getImages(){
         imagesList = arrayListOf()
-        db = FirebaseFirestore.getInstance()
-        db.collection("food/${args.id}/variations/").get().addOnSuccessListener {
-            for (dc in it){
-                variationsList.add(dc.toObject(VariationsExtras::class.java))
-            }
-            updateList(variationsList)
-        }
         db.collection("food/${args.id}/images/").get().addOnSuccessListener {
             if (it.isEmpty){
                 Toast.makeText(context, "Vacio", Toast.LENGTH_SHORT).show()
@@ -157,25 +147,54 @@ class DetailFragment : Fragment() {
                 val image = dc.toObject(ImageSlider::class.java)
                 imagesList.add(image)
             }
+            updateImages(imagesList)
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun updateImages(imagesList: ArrayList<ImageSlider>) {
+        sAdapter = SliderAdapter(imagesList, viewPager2)
+
+        viewPager2.adapter = sAdapter
+
+        sAdapter.notifyDataSetChanged()
+    }
+
+    private fun getExtras(){
+        extrasList = arrayListOf()
         db.collection("food/${args.id}/extra/").get().addOnSuccessListener {
             if (it.isEmpty){
                 Toast.makeText(context, "Vacio", Toast.LENGTH_SHORT).show()
             }
             for (dc in it){
-                othersList.add(dc.toObject(VariationsExtras::class.java))
+                extrasList.add(dc.toObject(VariationsExtras::class.java))
             }
+            updateExtras(extrasList)
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun updateExtras(extrasList: ArrayList<VariationsExtras>) {
+        eAdapter = ExtrasAdapter(extrasList)
+        binding.others.adapter = eAdapter
+        GridLayoutManager(context, extrasList.size / 2, RecyclerView.VERTICAL, false).apply {
+            binding.others.layoutManager = this
+        }
+        eAdapter.notifyDataSetChanged()
+    }
+
+    private fun getVariations() {
+        variationsList = arrayListOf()
+        db.collection("food/${args.id}/variations/").get().addOnSuccessListener {
+            for (dc in it){
+                variationsList.add(dc.toObject(VariationsExtras::class.java))
+            }
+            updateList(variationsList)
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun updateList(variationsList: ArrayList<VariationsExtras>) {
-
-        eAdapter = ExtrasAdapter(othersList)
-        binding.others.layoutManager = LinearLayoutManager(context)
-        binding.others.adapter = eAdapter
-        eAdapter.notifyDataSetChanged()
-
         vAdapter = VariationsAdapter(variationsList)
         binding.variationRecycler.isNestedScrollingEnabled = false
         binding.variationRecycler.adapter = vAdapter
