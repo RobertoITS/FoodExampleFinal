@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- To see how these attributes are used, please visit https://material.io/develop/android/theming/color/ -->
-
     <style name="TextAppearance.FoodExample.Toolbar.Text" parent="TextAppearance.MaterialComponents.Headline5" >
         <item name="android:textColor">?attr/colorOnSurface</item>
     </style>

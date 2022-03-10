@@ -11,7 +11,6 @@ import android.widget.RadioButton
 import android.widget.Toast
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
@@ -189,12 +188,12 @@ class DetailFragment : Fragment() {
             for (dc in it){
                 variationsList.add(dc.toObject(VariationsExtras::class.java))
             }
-            updateList(variationsList)
+            updateVariations(variationsList)
         }
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    private fun updateList(variationsList: ArrayList<VariationsExtras>) {
+    private fun updateVariations(variationsList: ArrayList<VariationsExtras>) {
         vAdapter = VariationsAdapter(variationsList)
         binding.variationRecycler.isNestedScrollingEnabled = false
         binding.variationRecycler.adapter = vAdapter

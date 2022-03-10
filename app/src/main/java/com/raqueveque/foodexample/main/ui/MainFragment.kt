@@ -3,30 +3,48 @@ package com.raqueveque.foodexample.main.ui
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.graphics.Color
+import android.opengl.Visibility
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuItemCompat
+import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.widget.CompositePageTransformer
+import androidx.viewpager2.widget.MarginPageTransformer
+import androidx.viewpager2.widget.ViewPager2
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
+import com.raqueveque.foodexample.IOnBackPressed
 import com.raqueveque.foodexample.R
 import com.raqueveque.foodexample.Utilities
 import java.util.*
 import kotlin.collections.ArrayList
 import com.raqueveque.foodexample.databinding.FragmentMainBinding
 import com.raqueveque.foodexample.detail.ImageSlider
+import com.raqueveque.foodexample.detail.SliderAdapter
+import com.raqueveque.foodexample.detail.adapter.ExtrasAdapter
+import com.raqueveque.foodexample.detail.adapter.VariationsAdapter
+import com.raqueveque.foodexample.detail.constructor.VariationsExtras
 import com.raqueveque.foodexample.main.adapter.FoodAdapter
 import com.raqueveque.foodexample.main.constructor.Food
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), IOnBackPressed {
+
+    private var isRevealed = false
+
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
@@ -41,6 +59,21 @@ class MainFragment : Fragment() {
 
     private var visible: Boolean = false
     var isToolbarShown = false
+
+    private lateinit var viewPager2: ViewPager2
+    private val sliderHandler = Handler()
+
+    private lateinit var variationsList: ArrayList<VariationsExtras>
+    private lateinit var imagesList: ArrayList<ImageSlider>
+    private lateinit var extrasList: ArrayList<VariationsExtras>
+    private lateinit var vAdapter: VariationsAdapter
+    private lateinit var eAdapter: ExtrasAdapter
+    private lateinit var sAdapter: SliderAdapter
+
+    private var quantity = 1
+    private var price: Long = 0
+
+    private var id: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,6 +108,12 @@ class MainFragment : Fragment() {
                 }
             }
         )
+
+        binding.back.setOnClickListener {
+            revealLayoutFun()
+        }
+
+        quantityPicker()
 
         return binding.root
     }
@@ -136,14 +175,8 @@ class MainFragment : Fragment() {
         /**Aqui sobreescribimos las funciones:*/
         mAdapter.setOnItemClickListener(object : FoodAdapter.OnItemClickListener{
             override fun onItemClick(position: Int) {
-                //Enviamos los argumentos al siguiente fragment
-                val action = MainFragmentDirections.actionMainFragmentToDetailFragment(
-                    listFood[position].name,
-                    listFood[position].price!!,
-                    listFood[position].id,
-                    listFood[position].image
-                )
-                    findNavController().navigate(action)
+                id = foodArrayList[position].id
+                revealLayoutFun()
             }
         })
         mAdapter.setOnItemCheckListener(object : FoodAdapter.OnItemCheckListener{
@@ -284,5 +317,281 @@ class MainFragment : Fragment() {
         }
         // start the animation
         anim.start()
+    }
+
+
+
+
+    private fun revealLayoutFun() {
+        val mRevealLayout = binding.revealLayout
+
+        // based on the boolean value the
+        // reveal layout should be toggled
+        if (!isRevealed) {
+
+            // get the right and bottom side
+            // lengths of the reveal layout
+            val x: Int = mRevealLayout.right
+            val y: Int = mRevealLayout.bottom
+
+            // here the starting radius of the reveal
+            // layout is 0 when it is not visible
+            val startRadius = 0
+
+            // make the end radius should match
+            // the while parent view
+            val endRadius = kotlin.math.hypot(
+                mRevealLayout.width.toDouble(),
+                mRevealLayout.height.toDouble()
+            ).toInt()
+
+
+            // create the instance of the ViewAnimationUtils to
+            // initiate the circular reveal animation
+            val anim = ViewAnimationUtils.createCircularReveal(
+                mRevealLayout,
+                x,
+                y,
+                startRadius.toFloat(),
+                endRadius.toFloat()
+            )
+
+            // make the invisible reveal layout to visible
+            // so that upon revealing it can be visible to user
+            mRevealLayout.visibility = View.VISIBLE
+            // now start the reveal animation
+            anim.start()
+
+            // set the boolean value to true as the reveal
+            // layout is visible to the user
+            isRevealed = true
+
+            getImages()
+            getVariations()
+            getExtras()
+
+        } else {
+
+            // get the right and bottom side lengths
+            // of the reveal layout
+            val x: Int = mRevealLayout.right
+            val y: Int = mRevealLayout.bottom
+
+            // here the starting radius of the reveal layout is its full width
+            val startRadius: Int = kotlin.math.max(mRevealLayout.width, mRevealLayout.height)
+
+            // and the end radius should be zero
+            // at this point because the layout should be closed
+            val endRadius = 0
+
+            // create the instance of the ViewAnimationUtils to
+            // initiate the circular reveal animation
+            val anim = ViewAnimationUtils.createCircularReveal(
+                mRevealLayout,
+                x,
+                y,
+                startRadius.toFloat(),
+                endRadius.toFloat()
+            )
+
+            // now as soon as the animation is ending, the reveal
+            // layout should also be closed
+            anim.addListener(object : Animator.AnimatorListener {
+                override fun onAnimationStart(animator: Animator) {}
+                override fun onAnimationEnd(animator: Animator) {
+                    mRevealLayout.visibility = View.GONE
+                }
+
+                override fun onAnimationCancel(animator: Animator) {}
+                override fun onAnimationRepeat(animator: Animator) {}
+            })
+
+            // start the closing animation
+            anim.start()
+
+            // set the boolean variable to false
+            // as the reveal layout is invisible
+            isRevealed = false
+
+//            variationsList.clear()
+//            imagesList.clear()
+//            extrasList.clear()
+//            updateVariations(variationsList)
+//            updateImages(imagesList)
+//            updateExtras(extrasList)
+        }
+    }
+
+    //Se cancela la funcion de atras a menos se cumpla la condicion
+    override fun onBackPressed(): Boolean {
+        return if (!binding.revealLayout.isVisible){
+            true
+        } else {
+            revealLayoutFun()
+            false
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //Se tiene que colocar una vez que se crea la vista
+        viewPager2 = binding.imageSliderViewPager
+
+        viewPager2.clipToPadding = false
+        viewPager2.clipChildren = false
+        viewPager2.offscreenPageLimit = 3
+        viewPager2.getChildAt(0).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
+
+        val compositePageTransformer = CompositePageTransformer()
+        compositePageTransformer.addTransformer(MarginPageTransformer(30))
+        compositePageTransformer.addTransformer { page, position ->
+            val r = 1 - kotlin.math.abs(position)
+            page.scaleY = 0.85f + r * 0.25f
+        }
+
+        viewPager2.setPageTransformer(compositePageTransformer)
+        //Hasta aca, ver las animaciones
+
+        viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                sliderHandler.removeCallbacks(sliderRunnable)
+                sliderHandler.postDelayed(sliderRunnable, 3000)
+            }
+        })
+    }
+
+    private val sliderRunnable = Runnable {
+        viewPager2.currentItem = viewPager2.currentItem + 1
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sliderHandler.postDelayed(sliderRunnable, 3000)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sliderHandler.postDelayed(sliderRunnable, 3000)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun quantityPicker() {
+        //Colocamos por defecto 1 en el edittext
+        binding.quantity.setText("1")
+        //El contenido del edittext lo pasamos a INT
+        quantity = Integer.parseInt(binding.quantity.text.toString())
+        //Sumamos o restamos pedidos
+        binding.less.setOnClickListener {
+            if (quantity != 1)
+                quantity -= 1
+            binding.quantity.setText(quantity.toString())
+            val total = quantity * price
+            binding.price.text = "$$total"
+        }
+        binding.more.setOnClickListener {
+            quantity += 1
+            binding.quantity.setText(quantity.toString())
+            val total = quantity * price
+            binding.price.text = "$$total"
+        }
+    }
+
+    private fun getImages(){
+        imagesList = arrayListOf()
+        db.collection("food/${id}/images/").get().addOnSuccessListener {
+            if (it.isEmpty){
+                Toast.makeText(context, "Vacio", Toast.LENGTH_SHORT).show()
+            }
+            for (dc in it){
+                val image = dc.toObject(ImageSlider::class.java)
+                imagesList.add(image)
+            }
+            updateImages(imagesList)
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun updateImages(imagesList: ArrayList<ImageSlider>) {
+        sAdapter = SliderAdapter(imagesList, viewPager2)
+
+        viewPager2.adapter = sAdapter
+
+        sAdapter.notifyDataSetChanged()
+    }
+
+    private fun getExtras(){
+        extrasList = arrayListOf()
+        db.collection("food/${id}/extra/").get().addOnSuccessListener {
+            if (it.isEmpty){
+                Toast.makeText(context, "Vacio", Toast.LENGTH_SHORT).show()
+            }
+            for (dc in it){
+                extrasList.add(dc.toObject(VariationsExtras::class.java))
+            }
+            updateExtras(extrasList)
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun updateExtras(extrasList: ArrayList<VariationsExtras>) {
+        eAdapter = ExtrasAdapter(extrasList)
+        binding.others.adapter = eAdapter
+        GridLayoutManager(context, extrasList.size / 2, RecyclerView.VERTICAL, false).apply {
+            binding.others.layoutManager = this
+        }
+        eAdapter.notifyDataSetChanged()
+    }
+
+    private fun getVariations() {
+        variationsList = arrayListOf()
+        db.collection("food/${id}/variations/").get().addOnSuccessListener {
+            for (dc in it){
+                variationsList.add(dc.toObject(VariationsExtras::class.java))
+            }
+            updateVariations(variationsList)
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun updateVariations(variationsList: ArrayList<VariationsExtras>) {
+        vAdapter = VariationsAdapter(variationsList)
+        binding.variationRecycler.isNestedScrollingEnabled = false
+        binding.variationRecycler.adapter = vAdapter
+        /**Usamos el gridlayoutmanager para agrandar el layout y que se ajuste a la pantalla
+         * La cantidad de filas la define el tamaño de la lista, en modo horizontal*/
+        GridLayoutManager(context, variationsList.size, RecyclerView.HORIZONTAL, false).apply {
+            binding.variationRecycler.layoutManager = this
+        }
+        vAdapter.notifyDataSetChanged()
+
+        /**Aqui sobreescribimos la funcion creada en el adapter
+         * usando interface:*/
+        vAdapter.setOnSingleItemCheckListener(object : VariationsAdapter.OnItemSingleCheckListener{
+            var lastChecked: RadioButton? = null
+            var lastCheckedPos = 0
+            @SuppressLint("SetTextI18n")
+            override fun onItemSingleCheck(position: Int, radioButton: View) {
+                //Obtenemos el radioButton actual
+                val rb = radioButton as RadioButton
+                //Pasamos el "tag" de ese rB, y dejamos constancia de la ultima
+                //posicion de donde se hizo "click"
+                val clickedPos = (rb.tag as Int).toInt()
+                if (rb.isChecked) {
+                    if (lastChecked != null) {
+                        //Aqui, si se cumplen las condiciones, el ultimo tocado
+                        //deja de esta checkeado
+                        lastChecked!!.isChecked = false
+                    }
+                    //Actualizamos los datos
+                    lastChecked = rb
+                    lastCheckedPos = clickedPos
+                } else lastChecked = null
+                price = variationsList[position].price!!.toLong()
+                binding.price.text = "$${variationsList[position].price!! * quantity}"
+            }
+        })
     }
 }

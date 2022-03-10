@@ -1,320 +1,326 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    android:background="?attr/colorSurface"
-    tools:context=".detail.DetailFragment"
-    tools:ignore="MergeRootFrame">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
-        android:layout_width="match_parent"
-        android:layout_height="278dp"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:stateListAnimator="@animator/show_toolbar"
-        android:background="?attr/colorSurface"
-        android:animateLayoutChanges="true">
-
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorSurface"
-            app:statusBarScrim="?attr/colorSurface"
-            app:collapsedTitleGravity="center"
-            app:collapsedTitleTextAppearance="?attr/colorOnSurface"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            app:titleEnabled="false"
-            app:toolbarId="@id/toolbar">
-
-            <androidx.viewpager2.widget.ViewPager2
-                android:id="@+id/imageSliderViewPager"
-                android:layout_width="match_parent"
-                android:layout_height="278dp"
-                android:fitsSystemWindows="true"
-                app:layout_collapseMode="parallax"
-                android:src="@mipmap/logo"/>
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:titleTextColor="?attr/colorOnSurface"
-                android:background="@android:color/transparent"
-                app:layout_collapseMode="pin"
-                app:menu="@menu/menu_home"/>
-
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:paddingBottom="72dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:fitsSystemWindows="true"
+        android:background="?attr/colorSurface"
+        tools:context=".detail.DetailFragment"
+        tools:ignore="MergeRootFrame">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar2"
+            android:layout_width="match_parent"
+            android:layout_height="278dp"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:stateListAnimator="@animator/show_toolbar"
+            android:background="?attr/colorSurface"
+            android:animateLayoutChanges="true">
+
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorSurface"
+                app:statusBarScrim="?attr/colorSurface"
+                app:collapsedTitleGravity="center"
+                app:collapsedTitleTextAppearance="?attr/colorOnSurface"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                app:titleEnabled="false"
+                app:toolbarId="@id/toolbar2">
+
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/imageSliderViewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="278dp"
+                    android:fitsSystemWindows="true"
+                    app:layout_collapseMode="parallax"
+                    android:src="@mipmap/logo"/>
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/toolbar2"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:titleTextColor="?attr/colorOnSurface"
+                    android:background="@android:color/transparent"
+                    app:layout_collapseMode="pin"
+                    app:menu="@menu/menu_home"/>
+
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="16dp">
-
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center_horizontal"
-                android:text="Nombre Local"
-                android:textAppearance="?attr/textAppearanceHeadline5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+            android:clipToPadding="false"
+            android:paddingBottom="72dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:minHeight="555dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/name">
+                android:layout_margin="16dp">
 
-                <LinearLayout
-                    android:id="@+id/divisor1"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center_horizontal"
+                    android:text="Nombre Local"
+                    android:textAppearance="?attr/textAppearanceHeadline5"
                     app:layout_constraintEnd_toEndOf="parent"
-                    android:orientation="horizontal"
-                    android:background="@drawable/shape_01"
-                    android:elevation="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".5"
-                        android:text="Variation"
-                        android:textSize="20sp"
-                        android:layout_marginVertical="10dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight=".5"
-                        android:text="Required"
-                        android:textSize="12sp"
-                        android:textAlignment="textEnd"
-                        android:textColor="@color/red"
-                        android:textStyle="italic"
-                        android:layout_marginVertical="10dp"/>
-                </LinearLayout>
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/variation_recycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/divisor1"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <LinearLayout
-                    android:id="@+id/divisor1.5"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/variation_recycler"
-                    app:layout_constraintBottom_toTopOf="@+id/divisor2"
-                    android:orientation="vertical">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:minHeight="555dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/name">
 
                     <LinearLayout
-                        android:background="@drawable/shape_01"
-                        android:elevation="10dp"
+                        android:id="@+id/divisor1"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:orientation="horizontal"
+                        android:background="@drawable/shape_01"
+                        android:elevation="10dp">
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".5"
+                            android:text="Variation"
+                            android:textSize="20sp"
+                            android:layout_marginVertical="10dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".5"
+                            android:text="Required"
+                            android:textSize="12sp"
+                            android:textAlignment="textEnd"
+                            android:textColor="@color/red"
+                            android:textStyle="italic"
+                            android:layout_marginVertical="10dp"/>
+                    </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/variation_recycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/divisor1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <LinearLayout
+                        android:id="@+id/divisor1.5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/variation_recycler"
+                        app:layout_constraintBottom_toTopOf="@+id/divisor2"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:background="@drawable/shape_01"
+                            android:elevation="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textSize="20sp"
+                                android:text="Others"
+                                android:layout_marginVertical="10dp"/>
+
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:id="@+id/others"
+                            />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/divisor2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/divisor1.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:background="@drawable/shape_01"
+                        android:elevation="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Quantity"
                             android:textSize="20sp"
-                            android:text="Others"
                             android:layout_marginVertical="10dp"/>
 
                     </LinearLayout>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/others"
-                        />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/divisor2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/divisor1.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:background="@drawable/shape_01"
-                    android:elevation="10dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Quantity"
-                        android:textSize="20sp"
-                        android:layout_marginVertical="10dp"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_marginTop="10dp"
-                    android:elevation="20dp"
-                    android:background="@drawable/shape_01"
-                    android:id="@+id/divisor3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/divisor2"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:gravity="center_horizontal">
-
-                    <Button
-                        android:id="@+id/less"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        app:icon="@drawable/ic_horizontal_rule_24"
-                        app:iconTint="@color/black"
-                        android:foregroundTint="@color/black"
-                        android:background="@android:color/transparent"/>
-
-                    <EditText
-                        android:id="@+id/quantity"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="20dp"
-                        android:inputType="number"
-                        android:textSize="23sp"/>
-
-                    <Button
-                        android:id="@+id/more"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
-                        app:icon="@drawable/ic_add_24"
-                        app:iconTint="@color/black"
-                        android:foregroundTint="@color/black"
-                        android:background="@android:color/transparent"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/divisor4"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/divisor3"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:gravity="center_vertical"
-                        android:textSize="20sp"
-                        android:text="Others"
-                        android:layout_marginVertical="10dp"
-                        android:background="@drawable/shape_01"/>
-
-                    <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Let us know if you have specific things in mind \n \n e.g. less spices, no mayo, etc."
-                        android:textSize="15sp"
-                        android:ems="10"
-                        android:gravity="start|top"
-                        android:inputType="textMultiLine"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/divisor5"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/divisor4"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="40dp"
-                        android:gravity="center_vertical"
-                        android:text="If the product is not available"
-                        android:textSize="20sp"
-                        android:layout_marginVertical="10dp"
-                        android:background="@drawable/shape_01"
-                        android:elevation="10dp"/>
-
-                    <AutoCompleteTextView
+                    <LinearLayout
                         android:layout_marginTop="10dp"
+                        android:elevation="20dp"
+                        android:background="@drawable/shape_01"
+                        android:id="@+id/divisor3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/divisor2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:gravity="center_horizontal">
+
+                        <Button
+                            android:id="@+id/less"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"
+                            app:icon="@drawable/ic_horizontal_rule_24"
+                            app:iconTint="@color/black"
+                            android:foregroundTint="@color/black"
+                            android:background="@android:color/transparent"/>
+
+                        <EditText
+                            android:id="@+id/quantity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginHorizontal="20dp"
+                            android:inputType="number"
+                            android:textSize="23sp"/>
+
+                        <Button
+                            android:id="@+id/more"
+                            android:layout_width="50dp"
+                            android:layout_height="wrap_content"
+                            app:icon="@drawable/ic_add_24"
+                            app:iconTint="@color/black"
+                            android:foregroundTint="@color/black"
+                            android:background="@android:color/transparent"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/divisor4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Remove from the order">
+                        app:layout_constraintTop_toBottomOf="@+id/divisor3"
+                        android:orientation="vertical">
 
-                    </AutoCompleteTextView>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="center_vertical"
+                            android:textSize="20sp"
+                            android:text="Others"
+                            android:layout_marginVertical="10dp"
+                            android:background="@drawable/shape_01"/>
 
-                </LinearLayout>
+                        <EditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Let us know if you have specific things in mind \n \n e.g. less spices, no mayo, etc."
+                            android:textSize="15sp"
+                            android:ems="10"
+                            android:gravity="start|top"
+                            android:inputType="textMultiLine"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/divisor5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent">
+                    </LinearLayout>
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/divisor5"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textSize="20sp"
-                        android:text="Total"/>
+                        app:layout_constraintTop_toBottomOf="@+id/divisor4"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/price"
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="40dp"
+                            android:gravity="center_vertical"
+                            android:text="If the product is not available"
+                            android:textSize="20sp"
+                            android:layout_marginVertical="10dp"
+                            android:background="@drawable/shape_01"
+                            android:elevation="10dp"/>
+
+                        <AutoCompleteTextView
+                            android:layout_marginTop="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Remove from the order">
+
+                        </AutoCompleteTextView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textSize="23sp"
-                        android:text="$350"
-                        android:textAlignment="textEnd"/>
+                        app:layout_constraintTop_toBottomOf="@+id/divisor5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="20sp"
+                            android:text="Total"/>
+
+                        <TextView
+                            android:id="@+id/price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textSize="23sp"
+                            android:text="$350"
+                            android:textAlignment="textEnd"/>
 
 
-                </LinearLayout>
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
 
-    </androidx.core.widget.NestedScrollView>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            style="@style/Widget.MaterialComponents.FloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:tint="@android:color/white"
+            app:shapeAppearance="@style/ShapeAppearance.FoodExample.FAB"
+            app:layout_anchor="@id/appbar2"
+            app:layout_anchorGravity="bottom|end"
+            app:srcCompat="@drawable/ic_add_24" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        style="@style/Widget.MaterialComponents.FloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:tint="@android:color/white"
-        app:shapeAppearance="@style/ShapeAppearance.FoodExample.FAB"
-        app:layout_anchor="@id/appbar"
-        app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@drawable/ic_add_24" />
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>
