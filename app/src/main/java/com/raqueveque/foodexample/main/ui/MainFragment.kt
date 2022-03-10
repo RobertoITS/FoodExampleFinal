@@ -13,6 +13,7 @@ import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
@@ -25,14 +26,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.appbar.AppBarLayout
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
 import com.raqueveque.foodexample.IOnBackPressed
 import com.raqueveque.foodexample.R
 import com.raqueveque.foodexample.Utilities
 import java.util.*
-import kotlin.collections.ArrayList
 import com.raqueveque.foodexample.databinding.FragmentMainBinding
+import kotlin.collections.ArrayList
 import com.raqueveque.foodexample.detail.ImageSlider
 import com.raqueveque.foodexample.detail.SliderAdapter
 import com.raqueveque.foodexample.detail.adapter.ExtrasAdapter
@@ -176,6 +178,12 @@ class MainFragment : Fragment(), IOnBackPressed {
         mAdapter.setOnItemClickListener(object : FoodAdapter.OnItemClickListener{
             override fun onItemClick(position: Int) {
                 id = foodArrayList[position].id
+                binding.variationShimmer.visibility = View.VISIBLE
+                binding.variationShimmer.startShimmer()
+                binding.imageShimmer.visibility = View.VISIBLE
+                binding.imageShimmer.startShimmer()
+                binding.extrasShimmer.visibility = View.VISIBLE
+                binding.extrasShimmer.startShimmer()
                 revealLayoutFun()
             }
         })
@@ -413,12 +421,9 @@ class MainFragment : Fragment(), IOnBackPressed {
             // as the reveal layout is invisible
             isRevealed = false
 
-//            variationsList.clear()
-//            imagesList.clear()
-//            extrasList.clear()
-//            updateVariations(variationsList)
-//            updateImages(imagesList)
-//            updateExtras(extrasList)
+            //resetea la posicion del appbar y el nestedscrollview
+            binding.appbar2.setExpanded(true)
+            binding.scrollView.scrollTo(0, 0)
         }
     }
 
@@ -520,6 +525,8 @@ class MainFragment : Fragment(), IOnBackPressed {
         viewPager2.adapter = sAdapter
 
         sAdapter.notifyDataSetChanged()
+        binding.imageShimmer.stopShimmer()
+        binding.imageShimmer.visibility = View.GONE
     }
 
     private fun getExtras(){
@@ -543,6 +550,8 @@ class MainFragment : Fragment(), IOnBackPressed {
             binding.others.layoutManager = this
         }
         eAdapter.notifyDataSetChanged()
+        binding.extrasShimmer.stopShimmer()
+        binding.extrasShimmer.visibility = View.GONE
     }
 
     private fun getVariations() {
@@ -566,6 +575,9 @@ class MainFragment : Fragment(), IOnBackPressed {
             binding.variationRecycler.layoutManager = this
         }
         vAdapter.notifyDataSetChanged()
+
+        binding.variationShimmer.stopShimmer()
+        binding.variationShimmer.visibility = View.GONE
 
         /**Aqui sobreescribimos la funcion creada en el adapter
          * usando interface:*/

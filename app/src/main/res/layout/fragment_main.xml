@@ -112,6 +112,7 @@
             android:animateLayoutChanges="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsingToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
@@ -123,13 +124,46 @@
                 app:titleEnabled="false"
                 app:toolbarId="@id/toolbar">
 
-                <androidx.viewpager2.widget.ViewPager2
-                    android:id="@+id/imageSliderViewPager"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="278dp"
                     android:fitsSystemWindows="true"
-                    app:layout_collapseMode="parallax"
-                    android:src="@mipmap/logo"/>
+                    app:layout_collapseMode="parallax">
+
+                    <androidx.viewpager2.widget.ViewPager2
+                        android:id="@+id/imageSliderViewPager"
+                        android:layout_width="match_parent"
+                        android:layout_height="278dp"
+                        android:fitsSystemWindows="true"
+                        app:layout_collapseMode="parallax"
+                        android:src="@mipmap/logo"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/imageShimmer"
+                        android:layout_width="match_parent"
+                        android:layout_height="278dp"
+                        android:fitsSystemWindows="true"
+                        app:layout_collapseMode="parallax"
+                        android:src="@mipmap/logo"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="16dp"
+                            android:background="@color/shimmer"/>
+
+                    </com.facebook.shimmer.ShimmerFrameLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbar2"
@@ -145,6 +179,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
@@ -213,19 +248,45 @@
                             android:layout_marginVertical="10dp"/>
                     </LinearLayout>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/variation_recycler"
+                    <RelativeLayout
+                        android:id="@+id/rl"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toBottomOf="@+id/divisor1"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"/>
+                        app:layout_constraintEnd_toEndOf="parent">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/variation_recycler"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+                        <com.facebook.shimmer.ShimmerFrameLayout
+                            android:id="@+id/variation_shimmer"
+                            android:layout_width="match_parent"
+                            android:orientation="vertical"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical">
+
+                                <include layout="@layout/variations_card_shimmer"/>
+                                <include layout="@layout/variations_card_shimmer"/>
+                                <include layout="@layout/variations_card_shimmer"/>
+
+                            </LinearLayout>
+
+                        </com.facebook.shimmer.ShimmerFrameLayout>
+
+                    </RelativeLayout>
 
                     <LinearLayout
                         android:id="@+id/divisor1.5"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@+id/variation_recycler"
+                        app:layout_constraintTop_toBottomOf="@+id/rl"
                         app:layout_constraintBottom_toTopOf="@+id/divisor2"
                         android:orientation="vertical">
 
@@ -244,11 +305,46 @@
 
                         </LinearLayout>
 
-                        <androidx.recyclerview.widget.RecyclerView
+                        <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:id="@+id/others"
-                            />
+                            android:id="@+id/cl">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/others"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                />
+
+                            <com.facebook.shimmer.ShimmerFrameLayout
+                                android:id="@+id/extrasShimmer"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical">
+
+                                    <include layout="@layout/extras_card_shimmer"/>
+                                    <include layout="@layout/extras_card_shimmer"/>
+                                    <include layout="@layout/extras_card_shimmer"/>
+
+                                </LinearLayout>
+
+
+                            </com.facebook.shimmer.ShimmerFrameLayout>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
 
                     </LinearLayout>
 

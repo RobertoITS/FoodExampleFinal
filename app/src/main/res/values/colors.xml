@@ -12,4 +12,6 @@
 
     <color name="sunflower_gray_50">#fafafa</color>
     <color name="sunflower_gray_50_a600">#99fafafa</color>
+
+    <color name="shimmer">#dddddd</color>
 </resources>
