@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
@@ -15,7 +14,7 @@
         tools:ignore="MergeRootFrame">
 
         <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appbar2"
+            android:id="@+id/appbarDetail"
             android:layout_width="match_parent"
             android:layout_height="278dp"
             android:fitsSystemWindows="true"
@@ -34,7 +33,7 @@
                 app:collapsedTitleTextAppearance="?attr/colorOnSurface"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 app:titleEnabled="false"
-                app:toolbarId="@id/toolbar2">
+                app:toolbarId="@id/toolbarDetail">
 
                 <androidx.viewpager2.widget.ViewPager2
                     android:id="@+id/imageSliderViewPager"
@@ -45,7 +44,7 @@
                     android:src="@mipmap/logo"/>
 
                 <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/toolbar2"
+                    android:id="@+id/toolbarDetail"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     app:titleTextColor="?attr/colorOnSurface"
@@ -317,8 +316,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:tint="@android:color/white"
-            app:shapeAppearance="@style/ShapeAppearance.FoodExample.FAB"
-            app:layout_anchor="@id/appbar2"
+            app:shapeAppearance="@style/ShapeAppearance.FoodExample.FAB.ADD"
+            app:layout_anchor="@id/appbarDetail"
             app:layout_anchorGravity="bottom|end"
             app:srcCompat="@drawable/ic_add_24" />
 
