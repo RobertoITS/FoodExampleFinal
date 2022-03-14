@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.appbar.AppBarLayout
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
 import com.raqueveque.foodexample.IOnBackPressed
@@ -44,6 +45,7 @@ import com.raqueveque.foodexample.detail.adapter.VariationsAdapter
 import com.raqueveque.foodexample.detail.constructor.VariationsExtras
 import com.raqueveque.foodexample.main.adapter.FoodAdapter
 import com.raqueveque.foodexample.main.constructor.Food
+import kotlin.math.abs
 
 class MainFragment : Fragment(), IOnBackPressed {
 
@@ -171,6 +173,26 @@ class MainFragment : Fragment(), IOnBackPressed {
                 it.background.setTint(Color.parseColor("#FF03DAC5"))
             }
         }
+
+        binding.appbarDetail.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            val percentage: Float = abs(verticalOffset) / appBarLayout.totalScrollRange.toFloat()
+            when {
+                abs(verticalOffset) == appBarLayout.totalScrollRange -> {
+                    //Collapsed
+                    //Hide here
+                    binding.buttonsPanel.animate().alpha(0f)
+                }
+                verticalOffset == 0 -> {
+                    //Expanded
+                    //Show here
+                    binding.buttonsPanel.animate().alpha(1f)
+                }
+                else -> {
+                    //In Between
+                    binding.buttonsPanel.animate().alpha(percentage)
+                }
+            }
+        })
 
         return binding.root
     }
