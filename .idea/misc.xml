@@ -40,12 +40,16 @@
         <entry key="app/src/main/res/drawable-v24/ic_detail_share.xml" value="0.169" />
         <entry key="app/src/main/res/drawable-v24/ic_photo_library.xml" value="0.169" />
         <entry key="app/src/main/res/drawable-v24/ic_plus.xml" value="0.169" />
+        <entry key="app/src/main/res/drawable-v24/shape_01.xml" value="0.1635" />
         <entry key="app/src/main/res/drawable/fab_button_shape.xml" value="0.169" />
         <entry key="app/src/main/res/drawable/ic_search_commit.xml" value="0.169" />
         <entry key="app/src/main/res/drawable/shape_01.xml" value="0.169" />
+        <entry key="app/src/main/res/drawable/shape_02.xml" value="0.1635" />
+        <entry key="app/src/main/res/drawable/toolbar_dropshadow.xml" value="0.1635" />
+        <entry key="app/src/main/res/layout/example_card.xml" value="0.33" />
         <entry key="app/src/main/res/layout/extras_card.xml" value="0.19375" />
         <entry key="app/src/main/res/layout/fragment_detail.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/fragment_main.xml" value="0.19375" />
+        <entry key="app/src/main/res/layout/fragment_main.xml" value="0.25" />
         <entry key="app/src/main/res/layout/image_container.xml" value="0.19375" />
         <entry key="app/src/main/res/layout/variations_card.xml" value="0.19375" />
       </map>

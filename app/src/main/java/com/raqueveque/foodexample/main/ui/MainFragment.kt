@@ -2,19 +2,26 @@ package com.raqueveque.foodexample.main.ui
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
+import androidx.core.view.marginTop
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -87,6 +94,11 @@ class MainFragment : Fragment(), IOnBackPressed {
 
     private var id: String? = null
 
+    private var actualPos: Int = 0
+
+    var rotate = false
+
+    @SuppressLint("ResourceType")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -142,10 +154,22 @@ class MainFragment : Fragment(), IOnBackPressed {
         )
 
         quantityPicker()
-        TODO("Falta la animacion de los botones")
+
+        val fabRotate = AnimationUtils.loadAnimation(context, R.animator.fab_rotate)
+        val fabRotateOriginPosition = AnimationUtils.loadAnimation(context, R.animator.fab_rotate_origin_position)
+
+
         binding.add.setOnClickListener {
-            it.visibility = View.GONE
-            binding.delete.visibility = View.VISIBLE
+            if (!rotate) {
+                rotate = true
+                it.startAnimation(fabRotate)
+                it.background.setTint(Color.parseColor("#FF0000"))
+            }
+            else {
+                rotate = false
+                it.startAnimation(fabRotateOriginPosition)
+                it.background.setTint(Color.parseColor("#FF03DAC5"))
+            }
         }
 
         return binding.root
@@ -203,14 +227,17 @@ class MainFragment : Fragment(), IOnBackPressed {
         private fun updateListFood(listFood: ArrayList<Food>) {
             fAdapter = FoodAdapter(listFood)
     //        binding.recycler.isNestedScrollingEnabled = false
+            val dividerItemDecoration = DividerItemDecoration(binding.recyclerMain.context, LinearLayoutManager.VERTICAL)
             binding.recyclerMain.adapter = fAdapter
             binding.recyclerMain.layoutManager = LinearLayoutManager(context)
+            binding.recyclerMain.addItemDecoration(dividerItemDecoration)
             fAdapter.notifyDataSetChanged()
 
             /**Aqui sobreescribimos las funciones:*/
             fAdapter.setOnItemClickListener(object : FoodAdapter.OnItemClickListener{
                 override fun onItemClick(position: Int) {
                     id = foodArrayList[position].id
+                    actualPos = position
                     binding.variationShimmer.visibility = View.VISIBLE
                     binding.variationShimmer.startShimmer()
                     binding.imageShimmer.visibility = View.VISIBLE
@@ -411,6 +438,8 @@ class MainFragment : Fragment(), IOnBackPressed {
                 getVariations()
                 getExtras()
 
+                binding.collapsingToolbarDetail.title = foodArrayList[actualPos].name.toString()
+
             } else {
 
                 // get the right and bottom side lengths
@@ -438,6 +467,18 @@ class MainFragment : Fragment(), IOnBackPressed {
                     override fun onAnimationStart(animator: Animator) {}
                     override fun onAnimationEnd(animator: Animator) {
                         mRevealLayout.visibility = View.GONE
+
+                        //resetea la posicion del appbar y el nestedscrollview
+                        binding.appbarDetail.setExpanded(true)
+                        binding.detailScroll.scrollTo(0, 0)
+
+                        //Limpiamos las listas
+                        variationsList.clear()
+                        extrasList.clear()
+                        imagesList.clear()
+                        updateVariations(variationsList)
+                        updateExtras(extrasList)
+                        updateImages(imagesList)
                     }
 
                     override fun onAnimationCancel(animator: Animator) {}
@@ -450,19 +491,6 @@ class MainFragment : Fragment(), IOnBackPressed {
                 // set the boolean variable to false
                 // as the reveal layout is invisible
                 isRevealed = false
-
-
-                //resetea la posicion del appbar y el nestedscrollview
-                binding.appbarDetail.setExpanded(true)
-                binding.detailScroll.scrollTo(0, 0)
-
-                //Limpiamos las listas
-                variationsList.clear()
-                extrasList.clear()
-                imagesList.clear()
-                updateVariations(variationsList)
-                updateExtras(extrasList)
-                updateImages(imagesList)
             }
         }
 
@@ -767,6 +795,11 @@ class MainFragment : Fragment(), IOnBackPressed {
             // set the boolean variable to false
             // as the reveal layout is invisible
             isRevealed = false
+        }
+        db.collection("food/food_00_id/extra/").get().addOnSuccessListener {
+            if (it.isEmpty){
+                Toast.makeText(context, "vacio", Toast.LENGTH_SHORT).show()
+            }
         }
     }
     //---------------------------------------LAYOUT CARRITO--------------------------------------//
