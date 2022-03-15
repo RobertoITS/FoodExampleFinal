@@ -2,11 +2,9 @@ package com.raqueveque.foodexample.main.ui
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.os.Handler
@@ -18,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
-import androidx.core.view.marginTop
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -35,9 +32,7 @@ import com.raqueveque.foodexample.IOnBackPressed
 import com.raqueveque.foodexample.OrderFood
 import com.raqueveque.foodexample.R
 import com.raqueveque.foodexample.Utilities
-import java.util.*
 import com.raqueveque.foodexample.databinding.FragmentMainBinding
-import kotlin.collections.ArrayList
 import com.raqueveque.foodexample.detail.ImageSlider
 import com.raqueveque.foodexample.detail.SliderAdapter
 import com.raqueveque.foodexample.detail.adapter.ExtrasAdapter
@@ -45,6 +40,7 @@ import com.raqueveque.foodexample.detail.adapter.VariationsAdapter
 import com.raqueveque.foodexample.detail.constructor.VariationsExtras
 import com.raqueveque.foodexample.main.adapter.FoodAdapter
 import com.raqueveque.foodexample.main.constructor.Food
+import java.util.*
 import kotlin.math.abs
 
 class MainFragment : Fragment(), IOnBackPressed {
@@ -107,10 +103,24 @@ class MainFragment : Fragment(), IOnBackPressed {
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
 
+        //Inicializamos las decoraciones del recycler aca, sino se ejecutan una y otra vez
+        val dividerItemDecoration = DividerItemDecoration(binding.recyclerMain.context, LinearLayoutManager.VERTICAL)
+        binding.recyclerMain.layoutManager = LinearLayoutManager(context)
+        binding.recyclerMain.addItemDecoration(dividerItemDecoration)
+
+
+//        val trans: TransitionDrawable = binding.buttonsPanel.background as TransitionDrawable
+//        trans.startTransition(2000)
+        val animatedBackground: AnimationDrawable = binding.buttonsPanel.background as AnimationDrawable
+        animatedBackground.setEnterFadeDuration(1000)
+        animatedBackground.setExitFadeDuration(1000)
+        animatedBackground.start()
+
         //Si no le damos el valor true, el menu no se muestra
         setHasOptionsMenu(true)
 
-        binding.toolbarDetail.setNavigationIcon(R.drawable.ic_arrow_back)
+        binding.toolbarDetail.setNavigationIcon(R.drawable.ic_arrow_back_white)
+
         binding.toolbarDetail.setNavigationOnClickListener {
             revealLayoutFun()
         }
@@ -249,10 +259,7 @@ class MainFragment : Fragment(), IOnBackPressed {
         private fun updateListFood(listFood: ArrayList<Food>) {
             fAdapter = FoodAdapter(listFood)
     //        binding.recycler.isNestedScrollingEnabled = false
-            val dividerItemDecoration = DividerItemDecoration(binding.recyclerMain.context, LinearLayoutManager.VERTICAL)
             binding.recyclerMain.adapter = fAdapter
-            binding.recyclerMain.layoutManager = LinearLayoutManager(context)
-            binding.recyclerMain.addItemDecoration(dividerItemDecoration)
             fAdapter.notifyDataSetChanged()
 
             /**Aqui sobreescribimos las funciones:*/
@@ -367,11 +374,13 @@ class MainFragment : Fragment(), IOnBackPressed {
              * a hacer desde el iniciador del searchView*/
             searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                 override fun onQueryTextSubmit(query: String): Boolean {
+                    //if (query.isNotEmpty())//
                     searchFood(query)
                     searchView.clearFocus()
                     return false
                 }
                 override fun onQueryTextChange(newText: String): Boolean {
+                    //if (newText.isNotEmpty())
                     searchFood(newText)
                     return false
                 }

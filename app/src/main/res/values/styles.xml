@@ -3,6 +3,7 @@
 
     <style name="TextAppearance.FoodExample.Toolbar.Text" parent="TextAppearance.MaterialComponents.Headline5" >
         <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="fontFamily">@font/roboto_thin</item>
     </style>
 
     <style name="ShapeAppearance.FoodExample.FAB.ADD" parent="ShapeAppearance.MaterialComponents">

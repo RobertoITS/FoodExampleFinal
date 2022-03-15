@@ -9,9 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FF0000</color>
 
-
-    <color name="sunflower_gray_50">#fafafa</color>
-    <color name="sunflower_gray_50_a600">#99fafafa</color>
+    <color name="gray">#BCF2F2F7</color>
 
     <color name="shimmer">#dddddd</color>
 </resources>
