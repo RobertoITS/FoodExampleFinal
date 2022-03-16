@@ -2,10 +2,9 @@ package com.raqueveque.foodexample.main.ui
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.graphics.Color
-import android.graphics.drawable.AnimationDrawable
-import android.graphics.drawable.TransitionDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -42,6 +41,7 @@ import com.raqueveque.foodexample.main.adapter.FoodAdapter
 import com.raqueveque.foodexample.main.constructor.Food
 import java.util.*
 import kotlin.math.abs
+
 
 class MainFragment : Fragment(), IOnBackPressed {
 
@@ -96,6 +96,8 @@ class MainFragment : Fragment(), IOnBackPressed {
 
     var rotate = false
 
+
+
     @SuppressLint("ResourceType")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -111,10 +113,10 @@ class MainFragment : Fragment(), IOnBackPressed {
 
 //        val trans: TransitionDrawable = binding.buttonsPanel.background as TransitionDrawable
 //        trans.startTransition(2000)
-        val animatedBackground: AnimationDrawable = binding.buttonsPanel.background as AnimationDrawable
-        animatedBackground.setEnterFadeDuration(1000)
-        animatedBackground.setExitFadeDuration(1000)
-        animatedBackground.start()
+//        val animatedBackground: AnimationDrawable = binding.buttonsPanel.background as AnimationDrawable
+//        animatedBackground.setEnterFadeDuration(1000)
+//        animatedBackground.setExitFadeDuration(1000)
+//        animatedBackground.start()
 
         //Si no le damos el valor true, el menu no se muestra
         setHasOptionsMenu(true)
@@ -165,7 +167,7 @@ class MainFragment : Fragment(), IOnBackPressed {
             }
         )
 
-        quantityPicker()
+//        quantityPicker()
 
         val fabRotate = AnimationUtils.loadAnimation(context, R.animator.fab_rotate)
         val fabRotateOriginPosition = AnimationUtils.loadAnimation(context, R.animator.fab_rotate_origin_position)
@@ -200,6 +202,51 @@ class MainFragment : Fragment(), IOnBackPressed {
                 else -> {
                     //In Between
                     binding.buttonsPanel.animate().alpha(percentage)
+                }
+            }
+        })
+
+        binding.appbarMain.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            val percentage2 = abs(verticalOffset) / appBarLayout.totalScrollRange
+            val percentage = binding.lnPresentation.measuredHeight
+            when {
+                abs(verticalOffset) == appBarLayout.totalScrollRange -> {
+                    //Collapsed
+                    //Hide here
+//                    com.raqueveque.foodexample.AnimationUtils.slideDown(binding.lnPresentation)
+//                    val anim = ValueAnimator.ofInt(percentage, percentage2)
+//                    anim.addUpdateListener { valueAnimator ->
+//                        val value = valueAnimator.animatedValue as Int
+//                        val layoutParams: ViewGroup.LayoutParams =
+//                            binding.lnPresentation.layoutParams
+//                        layoutParams.height = value
+//                        binding.lnPresentation.layoutParams = layoutParams
+//                    }
+//                    anim.duration = 1000
+//                    anim.start()
+                    val anim = AnimationUtils.loadAnimation(context, R.animator.zoom_out)
+                    binding.lnPresentation.startAnimation(anim)
+                }
+                verticalOffset == 0 -> {
+                    //Expanded
+                    //Show here
+//                    com.raqueveque.foodexample.AnimationUtils.slideUp(binding.lnPresentation)
+//                    val anim = ValueAnimator.ofInt(percentage, percentage2)
+//                    anim.addUpdateListener { valueAnimator ->
+//                        val value = valueAnimator.animatedValue as Int
+//                        val layoutParams: ViewGroup.LayoutParams =
+//                            binding.lnPresentation.layoutParams
+//                        layoutParams.height = value
+//                        binding.lnPresentation.layoutParams = layoutParams
+//                    }
+//                    anim.duration = 1000
+//                    anim.start()
+                    val anim = AnimationUtils.loadAnimation(context, R.animator.zoom_in)
+                    binding.lnPresentation.startAnimation(anim)
+                }
+                else -> {
+                    //In Between
+
                 }
             }
         })
@@ -584,26 +631,26 @@ class MainFragment : Fragment(), IOnBackPressed {
 
         //Funcion para manejar la cantidad de pedidos
         @SuppressLint("SetTextI18n")
-        private fun quantityPicker() {
-            //Colocamos por defecto 1 en el edittext
-            binding.quantity.setText("1")
-            //El contenido del edittext lo pasamos a INT
-            quantity = Integer.parseInt(binding.quantity.text.toString())
-            //Sumamos o restamos pedidos
-            binding.less.setOnClickListener {
-                if (quantity != 1)
-                    quantity -= 1
-                binding.quantity.setText(quantity.toString())
-                val total = quantity * price
-                binding.price.text = "$$total"
-            }
-            binding.more.setOnClickListener {
-                quantity += 1
-                binding.quantity.setText(quantity.toString())
-                val total = quantity * price
-                binding.price.text = "$$total"
-            }
-        }
+//        private fun quantityPicker() {
+//            //Colocamos por defecto 1 en el edittext
+//            binding.quantity.setText("1")
+//            //El contenido del edittext lo pasamos a INT
+//            quantity = Integer.parseInt(binding.quantity.text.toString())
+//            //Sumamos o restamos pedidos
+//            binding.less.setOnClickListener {
+//                if (quantity != 1)
+//                    quantity -= 1
+//                binding.quantity.setText(quantity.toString())
+//                val total = quantity * price
+//                binding.price.text = "$$total"
+//            }
+//            binding.more.setOnClickListener {
+//                quantity += 1
+//                binding.quantity.setText(quantity.toString())
+//                val total = quantity * price
+//                binding.price.text = "$$total"
+//            }
+//        }
 
         //Obtenemos las imagenes
         private fun getImages(){
