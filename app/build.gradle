@@ -75,9 +75,6 @@ dependencies {
 
     //shimmer
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
-
-    //PhotoView
-    implementation 'com.github.chrisbanes:PhotoView:2.1.4'
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8

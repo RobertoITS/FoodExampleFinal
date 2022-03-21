@@ -1,0 +1,44 @@
+        binding.appbarMain.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            val percentage2 = abs(verticalOffset) / appBarLayout.totalScrollRange
+            val percentage = binding.lnPresentation.measuredHeight
+            when {
+                abs(verticalOffset) == appBarLayout.totalScrollRange -> {
+                    //Collapsed
+                    //Hide here
+//                    com.raqueveque.foodexample.AnimationUtils.slideDown(binding.lnPresentation)
+//                    val anim = ValueAnimator.ofInt(percentage, percentage2)
+//                    anim.addUpdateListener { valueAnimator ->
+//                        val value = valueAnimator.animatedValue as Int
+//                        val layoutParams: ViewGroup.LayoutParams =
+//                            binding.lnPresentation.layoutParams
+//                        layoutParams.height = value
+//                        binding.lnPresentation.layoutParams = layoutParams
+//                    }
+//                    anim.duration = 1000
+//                    anim.start()
+                    val anim = AnimationUtils.loadAnimation(context, R.animator.zoom_out)
+                    binding.lnPresentation.startAnimation(anim)
+                }
+                verticalOffset == 0 -> {
+                    //Expanded
+                    //Show here
+//                    com.raqueveque.foodexample.AnimationUtils.slideUp(binding.lnPresentation)
+//                    val anim = ValueAnimator.ofInt(percentage, percentage2)
+//                    anim.addUpdateListener { valueAnimator ->
+//                        val value = valueAnimator.animatedValue as Int
+//                        val layoutParams: ViewGroup.LayoutParams =
+//                            binding.lnPresentation.layoutParams
+//                        layoutParams.height = value
+//                        binding.lnPresentation.layoutParams = layoutParams
+//                    }
+//                    anim.duration = 1000
+//                    anim.start()
+                    val anim = AnimationUtils.loadAnimation(context, R.animator.zoom_in)
+                    binding.lnPresentation.startAnimation(anim)
+                }
+                else -> {
+                    //In Between
+
+                }
+            }
+        })

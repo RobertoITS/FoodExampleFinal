@@ -88,7 +88,7 @@
             android:background="@drawable/shape_02"
             android:clipToPadding="false"
             android:paddingBottom="72dp"
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="30dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <androidx.recyclerview.widget.RecyclerView
@@ -98,8 +98,6 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:minHeight="555dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="53dp" />
 
         </androidx.core.widget.NestedScrollView>
@@ -109,7 +107,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_anchor="@id/appbarMain"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="30dp"
             app:layout_anchorGravity="top|center">
 
             <LinearLayout
@@ -533,33 +531,31 @@
             app:layout_anchorGravity="bottom|center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_01"
+            android:background="@drawable/transition_drawable"
             android:elevation="20dp"
             android:gravity="center">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            <ImageButton
                 android:id="@+id/less"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="10dp"
-                android:backgroundTint="@android:color/white"
-                android:foreground="@color/white"
-                app:srcCompat="@drawable/ic_horizontal_rule_24"/>
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_horizontal_rule_24"/>
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            <EditText
                 android:id="@+id/quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
+            <ImageButton
                 android:id="@+id/more"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_marginHorizontal="10dp"
-                android:backgroundTint="@android:color/white"
-                android:foreground="@color/white"
+                android:background="@android:color/transparent"
                 android:src="@drawable/ic_add_24"/>
 
         </LinearLayout>
@@ -573,7 +569,7 @@
         android:layout_height="match_parent"
         android:background="@color/black">
 
-        <com.github.chrisbanes.photoview.PhotoView
+        <ImageView
             android:id="@+id/foodImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
