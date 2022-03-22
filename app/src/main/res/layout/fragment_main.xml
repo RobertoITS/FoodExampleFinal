@@ -28,9 +28,10 @@
                 android:fitsSystemWindows="true"
                 app:contentScrim="@color/teal_700"
                 app:collapsedTitleGravity="center"
+                app:titleCollapseMode="fade"
+                app:expandedTitleGravity="center"
                 app:collapsedTitleTextAppearance="@style/TextAppearance.FoodExample.Toolbar.Text"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-                app:title="@string/app_name"
                 android:fontFamily="@font/emblema_one"
                 app:toolbarId="@id/toolbarMain">
 
@@ -52,7 +53,6 @@
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/toolbarMain"
-                    app:title="@string/app_name"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     app:titleTextColor="@android:color/transparent"
@@ -102,58 +102,48 @@
 
         </androidx.core.widget.NestedScrollView>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/lnPresentation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <com.raqueveque.foodexample.RoundedImage
+            android:id="@+id/logoFront"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:padding="5dp"
+            app:layout_collapseMode="parallax"
+            app:layout_collapseParallaxMultiplier="0.4"
+            android:src="@mipmap/logo"
             app:layout_anchor="@id/appbarMain"
-            android:layout_marginTop="30dp"
-            app:layout_anchorGravity="top|center">
+            app:layout_anchorGravity="center|bottom"/>
 
-            <LinearLayout
-                android:layout_marginHorizontal="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="80dp"
-                android:orientation="vertical"
-                android:layout_width="300dp"
-                android:layout_height="200dp"
-                android:gravity="center_horizontal"
-                android:elevation="4dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:background="@drawable/shape_01">
-
-                <TextView
-                    android:layout_marginTop="70dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Mi Tienda"
-                    android:textSize="40sp"
-                    android:textColor="@color/black"/>
-            </LinearLayout>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/logoFront"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="60dp"
-                app:cardUseCompatPadding="true"
-                app:cardElevation="5dp"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintVertical_bias=".01">
-                <ImageView
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:src="@mipmap/logo"
-                    android:scaleType="centerCrop"/>
-            </com.google.android.material.card.MaterialCardView>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <ImageButton
+            android:id="@+id/fb"
+            android:layout_marginBottom="20dp"
+            app:layout_anchor="@id/logoFront"
+            app:layout_anchorGravity="center"
+            android:background="@android:color/transparent"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/fb"
+            android:scaleType="centerInside" />
+        <ImageButton
+            android:id="@+id/ins"
+            app:layout_anchor="@id/logoFront"
+            app:layout_anchorGravity="center"
+            android:layout_marginHorizontal="20dp"
+            android:background="@android:color/transparent"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/ins"
+            android:scaleType="centerInside"/>
+        <ImageButton
+            android:id="@+id/tw"
+            app:layout_anchor="@id/logoFront"
+            app:layout_anchorGravity="center"
+            android:background="@android:color/transparent"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@mipmap/tw"
+            android:scaleType="centerInside"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -174,7 +164,8 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:stateListAnimator="@animator/show_toolbar"
             android:background="?attr/colorSurface"
-            android:animateLayoutChanges="true">
+            android:animateLayoutChanges="true"
+            app:expanded="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
                 android:id="@+id/collapsingToolbarDetail"
@@ -240,7 +231,8 @@
                     app:titleTextColor="?attr/colorOnSurface"
                     android:background="@android:color/transparent"
                     app:layout_collapseMode="pin"
-                    android:elevation="10dp"/>
+                    android:elevation="10dp"
+                    app:navigationIcon="@drawable/ic_arrow_back_white"/>
 
             </com.google.android.material.appbar.CollapsingToolbarLayout>
 
@@ -281,12 +273,41 @@
                     tools:layout_editor_absoluteY="41dp">
 
                     <LinearLayout
+                        android:id="@+id/lnPrice"
+                        android:layout_marginTop="10dp"
+                        android:background="@color/white"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Total"
+                            android:textSize="20sp" />
+
+                        <TextView
+                            android:id="@+id/price"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="$350"
+                            android:textAlignment="textEnd"
+                            android:textSize="23sp" />
+
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:layout_marginTop="10dp"
                         android:id="@+id/lnVariations"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/lnPrice"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         android:background="@color/white">
@@ -478,34 +499,6 @@
 
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_marginTop="10dp"
-                        android:background="@color/white"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/divisor5">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="Total"
-                            android:textSize="20sp" />
-
-                        <TextView
-                            android:id="@+id/price"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="$350"
-                            android:textAlignment="textEnd"
-                            android:textSize="23sp" />
-
-
-                    </LinearLayout>
-
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -531,7 +524,7 @@
             app:layout_anchorGravity="bottom|center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/transition_drawable"
+            android:background="@drawable/shape_02"
             android:elevation="20dp"
             android:gravity="center">
 
@@ -561,35 +554,4 @@
         </LinearLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:visibility="gone"
-        android:id="@+id/foodImageLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black">
-
-        <ImageView
-            android:id="@+id/foodImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
-
-        <ImageButton
-            android:id="@+id/backImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_arrow_back_white"
-            android:background="@android:color/transparent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintVertical_bias=".02"
-            app:layout_constraintHorizontal_bias=".03"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </RelativeLayout>

@@ -22,30 +22,13 @@ class SliderAdapter (items: ArrayList<ImageSlider>, viewPager2: ViewPager2): Rec
         this.viewPager2 = viewPager2
     }
 
-    /**Creamos la funcion del clickListener*/
-    private lateinit var mListener: OnItemClickListener
-    interface OnItemClickListener{
-        fun onItemClick(position: Int)
-    }
-    fun setOnItemClickListener(listener: OnItemClickListener){
-        mListener = listener
-    }
-
-
-
-    class SliderViewHolder(item: View, listener: OnItemClickListener): RecyclerView.ViewHolder(item){
+    class SliderViewHolder(item: View): RecyclerView.ViewHolder(item){
         val image: ImageView = item.findViewById(R.id.imageSlide)
-
-        init {
-            item.setOnClickListener { listener.onItemClick(adapterPosition) }
-        }
-
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SliderViewHolder {
         return SliderViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.image_container, parent, false),
-            mListener
+            LayoutInflater.from(parent.context).inflate(R.layout.image_container, parent, false)
         )
     }
 

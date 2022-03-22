@@ -6,25 +6,6 @@
         <item name="fontFamily">@font/emblema_one</item>
     </style>
 
-    <style name="ShapeAppearance.FoodExample.FAB.ADD" parent="ShapeAppearance.MaterialComponents">
-        <item name="cornerFamily">rounded</item>
-
-        <item name="cornerSizeTopLeft">0dp</item>
-        <item name="cornerSizeTopRight">@dimen/fab_corner_radius</item>
-        <item name="cornerSizeBottomRight">0dp</item>
-        <item name="cornerSizeBottomLeft">@dimen/fab_corner_radius</item>
-    </style>
-
-    <style name="ShapeAppearance.FoodExample.FAB.DELETE" parent="ShapeAppearance.MaterialComponents">
-        <item name="cornerFamily">rounded</item>
-
-        <item name="cornerSizeTopRight">0dp</item>
-        <item name="cornerSizeTopLeft">@dimen/fab_corner_radius</item>
-        <item name="cornerSizeBottomLeft">0dp</item>
-        <item name="cornerSizeBottomRight">@dimen/fab_corner_radius</item>
-    </style>
-
     <!-- Plus button on detail page -->
-    <dimen name="fab_corner_radius">30dp</dimen>
 
 </resources>

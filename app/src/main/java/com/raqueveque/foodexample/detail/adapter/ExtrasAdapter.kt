@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.raqueveque.foodexample.databinding.ExtrasCardBinding
+
 import com.raqueveque.foodexample.detail.constructor.VariationsExtras
 
 class ExtrasAdapter (private var list: ArrayList<VariationsExtras>): RecyclerView.Adapter<ExtrasAdapter.ExtrasViewHolder>() {

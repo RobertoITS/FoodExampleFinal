@@ -48,32 +48,12 @@ import kotlin.math.abs
 import kotlin.math.absoluteValue
 
 
-class MainFragment : Fragment(), IOnBackPressed, View.OnTouchListener {
+class MainFragment : Fragment(), IOnBackPressed {
 
     private var isRevealed = false
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
-
-
-    private val TAG = "Touch"
-    private val MIN_ZOOM = 1f
-    val MAX_ZOOM = 1f
-
-    // These matrices will be used to scale points of the image
-    var matrix = Matrix()
-    var savedMatrix = Matrix()
-
-    // The 3 states (events) which the user is trying to perform
-    val NONE = 0
-    val DRAG = 1
-    val ZOOM = 2
-    var mode = NONE
-
-    // these PointF objects are used to record the point(s) the user is touching
-    var start = PointF()
-    var mid = PointF()
-    var oldDist = 1f
 
     var h = 0
     var w = 0
@@ -88,16 +68,15 @@ class MainFragment : Fragment(), IOnBackPressed, View.OnTouchListener {
     //Lista de pedidos
     private var orderList: ArrayList<OrderFood> = arrayListOf()
 
-
+    //Lista de los chequeados
     private var checkedList: ArrayList<Food> = arrayListOf()
 
+    //El menu del searchview
     private lateinit var searchMenu: Menu
     private lateinit var itemSearch: MenuItem
 
     private var visible: Boolean = false
-    private var isToolbarMainShown = false
-
-    private var isToolbarDetailShown = false
+    private var isShown = false
 
     private lateinit var viewPager2: ViewPager2
     private val sliderHandler = Handler()
@@ -114,7 +93,6 @@ class MainFragment : Fragment(), IOnBackPressed, View.OnTouchListener {
     private lateinit var extrasList: ArrayList<VariationsExtras>
     private lateinit var eAdapter: ExtrasAdapter
 
-
     private var quantity = 1
     private var price: Long = 0
 
@@ -125,6 +103,7 @@ class MainFragment : Fragment(), IOnBackPressed, View.OnTouchListener {
     var rotate = false
 
     var misAppbarExpand = true
+
     var misAppbar2Expand = true
 
     @SuppressLint("ResourceType")
@@ -139,10 +118,13 @@ class MainFragment : Fragment(), IOnBackPressed, View.OnTouchListener {
         binding.recyclerMain.layoutManager = LinearLayoutManager(context)
         binding.recyclerMain.addItemDecoration(dividerItemDecoration)
 
+        binding.toolbarLayoutMain.apply {
+            setCollapsedTitleTextAppearance(R.font.emblema_one)
+            setExpandedTitleTextAppearance(R.font.emblema_one)
+        }
+
         //Si no le damos el valor true, el menu no se muestra
         setHasOptionsMenu(true)
-
-        binding.toolbarDetail.setNavigationIcon(R.drawable.ic_arrow_back_white)
 
         binding.toolbarDetail.setNavigationOnClickListener {
             revealLayoutFun()
@@ -150,49 +132,21 @@ class MainFragment : Fragment(), IOnBackPressed, View.OnTouchListener {
 
         checkedList = arrayListOf()
 
+        //Obtenemos los datos
         getData()
 
+        //Colocamos el actionbar principal
         (activity as AppCompatActivity?)!!.setSupportActionBar(binding.toolbarMain)
 
         setSearchToolbar()
 
+        //Esconder el teclado al tocar otras vistas
         Utilities.setupUI(binding.rootActivity, requireContext())
 
-        binding.mainScroll.setOnScrollChangeListener(
-            NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, _, _ ->
-                // User scrolled past image to height of toolbar and the title text is
-                // underneath the toolbar, so the toolbar should be shown.
-                val shouldShowToolbar = scrollY > binding.toolbarMain.height
-                // The new state of the toolbar differs from the previous state; update
-                // appbar and toolbar attributes.
-                if (isToolbarMainShown != shouldShowToolbar) {
-                    isToolbarMainShown = shouldShowToolbar
-                    // Use shadow animator to add elevation if toolbar is shown
-                    binding.appbarMain.isActivated = shouldShowToolbar
-                }
-            }
-        )
-
-        binding.detailScroll.setOnScrollChangeListener(
-            NestedScrollView.OnScrollChangeListener { v, scrollX, scrollY, _, _ ->
-                // User scrolled past image to height of toolbar and the title text is
-                // underneath the toolbar, so the toolbar should be shown.
-                val shouldShowToolbar = scrollY > binding.toolbarDetail.height
-                // The new state of the toolbar differs from the previous state; update
-                // appbar and toolbar attributes.
-                if (isToolbarDetailShown != shouldShowToolbar) {
-                    isToolbarDetailShown = shouldShowToolbar
-                    // Use shadow animator to add elevation if toolbar is shown
-                    binding.appbarDetail.isActivated = shouldShowToolbar
-                }
-            }
-        )
-
-//        quantityPicker()
+        quantityPicker()
 
         val fabRotate = AnimationUtils.loadAnimation(context, R.animator.fab_rotate)
         val fabRotateOriginPosition = AnimationUtils.loadAnimation(context, R.animator.fab_rotate_origin_position)
-
 
         binding.add.setOnClickListener {
             if (!rotate) {
@@ -209,12 +163,16 @@ class MainFragment : Fragment(), IOnBackPressed, View.OnTouchListener {
             }
         }
 
+        //Listener del cambio en el scroll del appbar
+        //Lo que se hace aca es tomar el valor del rango de scroll del appbar y el desplazamiento vertical
+        //del NestedScrollView, para esconder o mostrar las vistas
         binding.appbarDetail.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             val scrollRange = appBarLayout.totalScrollRange
             val fraction = 1f * (scrollRange + verticalOffset) / scrollRange
             if (fraction < 0.35 && misAppbar2Expand) {
                 //Hide here
                 misAppbar2Expand = false
+                //Se cambia la escala de la vista
                 binding.buttonsPanel.animate().scaleX(0f).scaleY(0f)
             }
             if (fraction > 0.27 && !misAppbar2Expand) {
@@ -223,51 +181,41 @@ class MainFragment : Fragment(), IOnBackPressed, View.OnTouchListener {
                 binding.buttonsPanel.animate().scaleX(1f).scaleY(1f)
             }
         })
-
+        //La misma funcionalidad, pero con el appbarmain
         binding.appbarMain.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             val scrollRange = appBarLayout.totalScrollRange
             val fraction = 1f * (scrollRange + verticalOffset) / scrollRange
             if (fraction < 0.5 && misAppbarExpand) {
                 //Hide here
                 misAppbarExpand = false
-                binding.lnPresentation.animate().scaleX(0f).scaleY(0f)
+                //Se cambia la escala de la vista
+                binding.fb.animate().scaleX(0f).scaleY(0f)
+                binding.ins.animate().scaleX(0f).scaleY(0f)
+                binding.tw.animate().scaleX(0f).scaleY(0f)
             }
             if (fraction > 0.8 && !misAppbarExpand) {
                 //Show here
                 misAppbarExpand = true
-                binding.lnPresentation.animate().scaleX(1f).scaleY(1f)
+                binding.fb.animate().scaleX(1f).scaleY(1f)
+                binding.ins.animate().scaleX(1f).scaleY(1f)
+                binding.tw.animate().scaleX(1f).scaleY(1f)
             }
         })
 
-        binding.foodImage.setOnClickListener(object : DoubleClickListener(){
-            override fun onDoubleClick(v: View?) {
-                Toast.makeText(context, "si", Toast.LENGTH_SHORT).show()
-                binding.foodImage.layoutParams.height = h
-                binding.foodImage.layoutParams.width = w
+        binding.logoFront.setOnClickListener {
+            if (!isShown) {
+                binding.fb.animate().translationX(-110f).translationY(-110f)
+                binding.ins.animate().translationX(0f).translationY(-142f)
+                binding.tw.animate().translationX(110f).translationY(-110f)
             }
-        })
+            else {
+                binding.fb.animate().translationX(0f).translationY(0f)
+                binding.ins.animate().translationX(0f).translationY(0f)
+                binding.tw.animate().translationX(0f).translationY(0f)
+            }
+        }
 
         return binding.root
-    }
-
-    // This class has methods that check if two clicks were registered
-    // within a span of DOUBLE_CLICK_TIME_DELTA i.e., in our case
-    // equivalent to 300 ms
-    abstract class DoubleClickListener : View.OnClickListener {
-        var lastClickTime: Long = 0
-        override fun onClick(v: View?) {
-            val clickTime = System.currentTimeMillis()
-            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_DELTA) {
-                onDoubleClick(v)
-            }
-            lastClickTime = clickTime
-        }
-
-        abstract fun onDoubleClick(v: View?)
-
-        companion object {
-            private const val DOUBLE_CLICK_TIME_DELTA: Long = 300 //milliseconds
-        }
     }
 
     //--------------------------------------LAYOUT PRINCIPAL-------------------------------------//
@@ -590,11 +538,10 @@ class MainFragment : Fragment(), IOnBackPressed, View.OnTouchListener {
 
         //Se cancela la funcion de atras a menos se cumpla la condicion
         override fun onBackPressed(): Boolean {
-            return if (!binding.detailLayout.isVisible || !binding.foodImageLayout.isVisible){
+            return if (!binding.detailLayout.isVisible){
                 true
             } else {
-                if (binding.detailLayout.isVisible && !binding.foodImageLayout.isVisible) revealLayoutFun()
-                else binding.foodImageLayout.visibility = View.GONE
+                revealLayoutFun()
                 false
             }
         }
@@ -695,18 +642,6 @@ class MainFragment : Fragment(), IOnBackPressed, View.OnTouchListener {
             //Paramos el shimmer
             binding.imageShimmer.stopShimmer()
             binding.imageShimmer.visibility = View.GONE
-
-            iAdapter.setOnItemClickListener(object : SliderAdapter.OnItemClickListener{
-                @SuppressLint("ClickableViewAccessibility")
-                override fun onItemClick(position: Int) {
-                    binding.foodImageLayout.visibility = View.VISIBLE
-                    Picasso.get().load(imagesList[position].image).into(binding.foodImage)
-                    h = binding.foodImage.height
-                    w = binding.foodImage.width
-                    binding.foodImage.setOnTouchListener(this@MainFragment)
-                }
-
-            })
         }
 
         //Obtenemos los extras
@@ -911,128 +846,4 @@ class MainFragment : Fragment(), IOnBackPressed, View.OnTouchListener {
     }
     //---------------------------------------LAYOUT CARRITO--------------------------------------//
 
-
-    @SuppressLint("ClickableViewAccessibility")
-    override fun onTouch(v: View, event: MotionEvent): Boolean {
-        val view = v as ImageView
-        view.scaleType = ImageView.ScaleType.MATRIX
-        val scale: Float
-        dumpEvent(event)
-        when (event.action and MotionEvent.ACTION_MASK) {
-            MotionEvent.ACTION_DOWN -> {
-                matrix.set(view.imageMatrix)
-                savedMatrix.set(matrix)
-                start.set(event.x, event.y)
-                Log.d(TAG, "mode=DRAG") // write to LogCat
-                mode = DRAG
-            }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
-                mode = NONE
-                Log.d(TAG, "mode=NONE")
-            }
-            MotionEvent.ACTION_POINTER_DOWN -> {
-                oldDist = spacing(event)
-                Log.d(TAG, "oldDist=$oldDist")
-                if (oldDist > 5f) {
-                    savedMatrix.set(matrix)
-                    midPoint(mid, event)
-                    mode = ZOOM
-                    Log.d(TAG, "mode=ZOOM")
-                }
-            }
-            MotionEvent.ACTION_MOVE -> if (mode == DRAG) {
-                matrix.set(savedMatrix)
-                matrix.postTranslate(
-                    event.x - start.x,
-                    event.y - start.y
-                ) // create the transformation in the matrix  of points
-            } else if (mode == ZOOM) {
-                // pinch zooming
-                val newDist = spacing(event)
-                Log.d(TAG, "newDist=$newDist")
-                if (newDist > 5f) {
-                    matrix.set(savedMatrix)
-                    scale = newDist / oldDist // setting the scaling of the
-                    // matrix...if scale > 1 means
-                    // zoom in...if scale < 1 means
-                    // zoom out
-                    matrix.postScale(scale, scale, mid.x, mid.y)
-                }
-            }
-        }
-        view.imageMatrix = matrix // display the transformation on screen
-        return true // indicate event was handled
-    }
-
-    /*
-     * --------------------------------------------------------------------------
-     * Method: spacing Parameters: MotionEvent Returns: float Description:
-     * checks the spacing between the two fingers on touch
-     * ----------------------------------------------------
-     */
-
-    /*
-     * --------------------------------------------------------------------------
-     * Method: spacing Parameters: MotionEvent Returns: float Description:
-     * checks the spacing between the two fingers on touch
-     * ----------------------------------------------------
-     */
-    private fun spacing(event: MotionEvent): Float {
-        val x = event.getX(0) - event.getX(1)
-        val y = event.getY(0) - event.getY(1)
-        return Math.sqrt((x * x + y * y).toDouble()).toFloat()
-    }
-
-    /*
-     * --------------------------------------------------------------------------
-     * Method: midPoint Parameters: PointF object, MotionEvent Returns: void
-     * Description: calculates the midpoint between the two fingers
-     * ------------------------------------------------------------
-     */
-
-    /*
-     * --------------------------------------------------------------------------
-     * Method: midPoint Parameters: PointF object, MotionEvent Returns: void
-     * Description: calculates the midpoint between the two fingers
-     * ------------------------------------------------------------
-     */
-    private fun midPoint(point: PointF, event: MotionEvent) {
-        val x = event.getX(0) + event.getX(1)
-        val y = event.getY(0) + event.getY(1)
-        point[x / 2] = y / 2
-    }
-
-    /** Show an event in the LogCat view, for debugging  */
-    private fun dumpEvent(event: MotionEvent) {
-        val names = arrayOf(
-            "DOWN",
-            "UP",
-            "MOVE",
-            "CANCEL",
-            "OUTSIDE",
-            "POINTER_DOWN",
-            "POINTER_UP",
-            "7?",
-            "8?",
-            "9?"
-        )
-        val sb = StringBuilder()
-        val action = event.action
-        val actionCode = action and MotionEvent.ACTION_MASK
-        sb.append("event ACTION_").append(names[actionCode])
-        if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_POINTER_UP) {
-            sb.append("(pid ").append(action shr MotionEvent.ACTION_POINTER_ID_SHIFT)
-            sb.append(")")
-        }
-        sb.append("[")
-        for (i in 0 until event.pointerCount) {
-            sb.append("#").append(i)
-            sb.append("(pid ").append(event.getPointerId(i))
-            sb.append(")=").append(event.getX(i).toInt())
-            sb.append(",").append(event.getY(i).toInt())
-            if (i + 1 < event.pointerCount) sb.append(";")
-        }
-        sb.append("]")
-        Log.d("Touch Events ---------", sb.toString())
-    }
 }
