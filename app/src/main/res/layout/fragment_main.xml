@@ -524,33 +524,36 @@
             app:layout_anchorGravity="bottom|center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_02"
             android:elevation="20dp"
             android:gravity="center">
 
             <ImageButton
                 android:id="@+id/less"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_marginHorizontal="10dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_horizontal_rule_24"/>
+                android:background="@drawable/quantity_bgn"
+                android:src="@drawable/ic_horizontal_rule_24"
+                android:elevation="6dp"/>
 
             <EditText
                 android:id="@+id/quantity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:background="@drawable/quantity_bgn"
+                android:textColor="@color/white"
                 android:inputType="number"
-                />
+                android:elevation="6dp"/>
 
             <ImageButton
                 android:id="@+id/more"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_marginHorizontal="10dp"
-                android:background="@android:color/transparent"
-                android:src="@drawable/ic_add_24"/>
-
+                android:background="@drawable/quantity_bgn"
+                android:src="@drawable/ic_add_24"
+                android:elevation="6dp"/>
         </LinearLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

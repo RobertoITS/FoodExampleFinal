@@ -5,8 +5,7 @@ import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.Matrix
-import android.graphics.PointF
-import android.net.Uri
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -17,8 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
-import androidx.core.view.marginTop
-import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
@@ -42,69 +39,70 @@ import com.raqueveque.foodexample.detail.adapter.VariationsAdapter
 import com.raqueveque.foodexample.detail.constructor.VariationsExtras
 import com.raqueveque.foodexample.main.adapter.FoodAdapter
 import com.raqueveque.foodexample.main.constructor.Food
-import com.squareup.picasso.Picasso
 import java.util.*
 import kotlin.math.abs
-import kotlin.math.absoluteValue
 
 
 class MainFragment : Fragment(), IOnBackPressed {
-
-    private var isRevealed = false
-
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
-
-    var h = 0
-    var w = 0
 
     //Instancia a la base de datos
     private lateinit var db: FirebaseFirestore
 
+    //El menu del searchview
+    private lateinit var searchMenu: Menu
+    private lateinit var itemSearch: MenuItem
+
+    //El viewPager2 (pasa las imagenes)
+    private lateinit var viewPager2: ViewPager2
+    private val sliderHandler = Handler()
+
+    /**Inicializamos las listas y sus adaptadores*/
+    //Lista de variedades y su adaptador
+    private lateinit var variationsList: ArrayList<VariationsExtras>
+    private lateinit var vAdapter: VariationsAdapter
+    //Lista de imagenes y su adaptador
+    private lateinit var imagesList: ArrayList<ImageSlider>
+    private lateinit var iAdapter: SliderAdapter
+    //Lista de extras y su adaptador
+    private lateinit var extrasList: ArrayList<VariationsExtras>
+    private lateinit var eAdapter: ExtrasAdapter
     //Lista de comida principal y su adaptador
     private var foodArrayList: ArrayList<Food> = arrayListOf()
     private lateinit var fAdapter: FoodAdapter
-
     //Lista de pedidos
     private var orderList: ArrayList<OrderFood> = arrayListOf()
 
     //Lista de los chequeados
     private var checkedList: ArrayList<Food> = arrayListOf()
 
-    //El menu del searchview
-    private lateinit var searchMenu: Menu
-    private lateinit var itemSearch: MenuItem
-
-    private var visible: Boolean = false
-    private var isShown = false
-
-    private lateinit var viewPager2: ViewPager2
-    private val sliderHandler = Handler()
-
-    //Lista de variedades y su adaptador
-    private lateinit var variationsList: ArrayList<VariationsExtras>
-    private lateinit var vAdapter: VariationsAdapter
-
-    //Lista de imagenes y su adaptador
-    private lateinit var imagesList: ArrayList<ImageSlider>
-    private lateinit var iAdapter: SliderAdapter
-
-    //Lista de extras y su adaptador
-    private lateinit var extrasList: ArrayList<VariationsExtras>
-    private lateinit var eAdapter: ExtrasAdapter
-
+    //Manejo de las cantidades
     private var quantity = 1
     private var price: Long = 0
 
+    //Obtenemos el ID de la coleccion a la que accedemos
     private var id: String? = null
 
+    //Guardamos la posicion actual del item en la lista principal
     private var actualPos: Int = 0
 
+    /**Variables de tipo BOOLEAN**/
+    //Controla la rotacion del fabbutton
     var rotate = false
-
+    //Controla la expancion del appbar de la pantalla de inicio
     var misAppbarExpand = true
-
+    //Controla la expancion del appbar de la pantalla de detalles
     var misAppbar2Expand = true
+    //Controla la visibilidad del searchToolbar
+    private var visible: Boolean = false
+    //Controla la visibilidad de los botones en el panel de inicio
+    private var isShown = false
+    //Controla la revelacion del layout de detalles
+    private var isRevealed = false
+
+    private var collapsedScale: Float = 0f
+    private var expandedScale: Float = 0f
 
     @SuppressLint("ResourceType")
     override fun onCreateView(
@@ -117,11 +115,6 @@ class MainFragment : Fragment(), IOnBackPressed {
         val dividerItemDecoration = DividerItemDecoration(binding.recyclerMain.context, LinearLayoutManager.VERTICAL)
         binding.recyclerMain.layoutManager = LinearLayoutManager(context)
         binding.recyclerMain.addItemDecoration(dividerItemDecoration)
-
-        binding.toolbarLayoutMain.apply {
-            setCollapsedTitleTextAppearance(R.font.emblema_one)
-            setExpandedTitleTextAppearance(R.font.emblema_one)
-        }
 
         //Si no le damos el valor true, el menu no se muestra
         setHasOptionsMenu(true)
@@ -167,6 +160,7 @@ class MainFragment : Fragment(), IOnBackPressed {
         //Lo que se hace aca es tomar el valor del rango de scroll del appbar y el desplazamiento vertical
         //del NestedScrollView, para esconder o mostrar las vistas
         binding.appbarDetail.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+
             val scrollRange = appBarLayout.totalScrollRange
             val fraction = 1f * (scrollRange + verticalOffset) / scrollRange
             if (fraction < 0.35 && misAppbar2Expand) {
@@ -183,6 +177,26 @@ class MainFragment : Fragment(), IOnBackPressed {
         })
         //La misma funcionalidad, pero con el appbarmain
         binding.appbarMain.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+            //Zoom Image
+            val maxScroll = appBarLayout.totalScrollRange
+
+            val scrollPercent = abs(verticalOffset).toFloat() / maxScroll.toFloat()
+
+            if (collapsedScale == 0f) {
+
+                val photo: Drawable = binding.detailImage.drawable
+
+                val bitmapWidth = photo.intrinsicWidth
+                val bitmapHeight = photo.intrinsicHeight
+
+                collapsedScale = binding.detailImage.width.toFloat() / bitmapWidth.toFloat()
+                expandedScale =  binding.detailImage.height.toFloat() / bitmapHeight.toFloat()
+
+                scalePhotoImage(binding.detailImage, expandedScale)
+            }else {
+                scalePhotoImage(binding.detailImage, collapsedScale + (expandedScale - collapsedScale) * (1f - scrollPercent))
+            }
+
             val scrollRange = appBarLayout.totalScrollRange
             val fraction = 1f * (scrollRange + verticalOffset) / scrollRange
             if (fraction < 0.5 && misAppbarExpand) {
@@ -204,18 +218,38 @@ class MainFragment : Fragment(), IOnBackPressed {
 
         binding.logoFront.setOnClickListener {
             if (!isShown) {
+                isShown = true
                 binding.fb.animate().translationX(-110f).translationY(-110f)
                 binding.ins.animate().translationX(0f).translationY(-142f)
                 binding.tw.animate().translationX(110f).translationY(-110f)
             }
             else {
+                isShown = false
                 binding.fb.animate().translationX(0f).translationY(0f)
                 binding.ins.animate().translationX(0f).translationY(0f)
                 binding.tw.animate().translationX(0f).translationY(0f)
             }
         }
 
+        binding.appbarMain.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener{ appBarLayout, verticalOffset ->
+
+        })
+
         return binding.root
+    }
+
+    private fun scalePhotoImage(photoView: ImageView, scale: Float) {
+        val photo = photoView.drawable
+        val bitmapWidth = photo.intrinsicWidth
+        val bitmapHeight = photo.intrinsicHeight
+        val offsetX = (photoView.width - bitmapWidth) / 2f
+        val offsetY = (photoView.height - bitmapHeight) / 2f
+        val centerX = photoView.width / 2f
+        val centerY = photoView.height / 2f
+        val imageMatrix = Matrix()
+        imageMatrix.setScale(scale, scale, centerX, centerY)
+        imageMatrix.preTranslate(offsetX, offsetY)
+        photoView.imageMatrix = imageMatrix
     }
 
     //--------------------------------------LAYOUT PRINCIPAL-------------------------------------//
@@ -513,6 +547,11 @@ class MainFragment : Fragment(), IOnBackPressed {
                         //resetea la posicion del appbar y el nestedscrollview
                         binding.appbarDetail.setExpanded(true)
                         binding.detailScroll.scrollTo(0, 0)
+
+                        quantity = 1
+                        binding.quantity.setText(quantity.toString())
+
+                        binding.price.text = ""
 
                         //Limpiamos las listas
                         variationsList.clear()
