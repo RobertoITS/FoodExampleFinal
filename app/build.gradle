@@ -44,6 +44,7 @@ android {
     buildFeatures{
         viewBinding true
     }
+    namespace 'com.raqueveque.foodexample'
 }
 
 dependencies {

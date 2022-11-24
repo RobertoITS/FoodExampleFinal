@@ -219,9 +219,9 @@ class MainFragment : Fragment(), IOnBackPressed {
         binding.logoFront.setOnClickListener {
             if (!isShown) {
                 isShown = true
-                binding.fb.animate().translationX(-110f).translationY(-110f)
-                binding.ins.animate().translationX(0f).translationY(-142f)
-                binding.tw.animate().translationX(110f).translationY(-110f)
+                binding.fb.animate().translationX(-190f).translationY(-190f)
+                binding.ins.animate().translationX(0f).translationY(-252f)
+                binding.tw.animate().translationX(190f).translationY(-190f)
             }
             else {
                 isShown = false

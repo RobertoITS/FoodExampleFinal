@@ -17,7 +17,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbarMain"
             android:layout_width="match_parent"
-            android:layout_height="278dp"
+            android:layout_height="@dimen/dimen_278dp_258dp_in_360"
             android:fitsSystemWindows="true">
 
             <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -38,7 +38,7 @@
                 <ImageView
                     android:id="@+id/detail_image"
                     android:layout_width="match_parent"
-                    android:layout_height="278dp"
+                    android:layout_height="@dimen/dimen_278dp_258dp_in_360"
                     android:contentDescription="@string/content_description"
                     android:fitsSystemWindows="true"
                     android:scaleType="centerCrop"
@@ -47,7 +47,7 @@
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="278dp"
+                    android:layout_height="@dimen/dimen_278dp_258dp_in_360"
                     android:foreground="@drawable/background_gradient_black"
                     />
 
@@ -102,48 +102,54 @@
 
         </androidx.core.widget.NestedScrollView>
 
-        <com.raqueveque.foodexample.RoundedImage
-            android:id="@+id/logoFront"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_margin="16dp"
-            android:clickable="true"
-            android:padding="5dp"
-            app:layout_collapseMode="parallax"
-            app:layout_collapseParallaxMultiplier="0.4"
-            android:src="@mipmap/logo"
-            app:layout_anchor="@id/appbarMain"
-            app:layout_anchorGravity="center|bottom"/>
-
-        <ImageButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fb"
             android:layout_marginBottom="20dp"
             app:layout_anchor="@id/logoFront"
             app:layout_anchorGravity="center"
-            android:background="@android:color/transparent"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@mipmap/fb"
-            android:scaleType="centerInside" />
-        <ImageButton
+            app:fabSize="mini"
+            android:backgroundTint="@color/gray"
+            app:backgroundTint="@android:color/transparent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_facebook"/>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/ins"
             app:layout_anchor="@id/logoFront"
             app:layout_anchorGravity="center"
+            app:fabSize="mini"
             android:layout_marginHorizontal="20dp"
-            android:background="@android:color/transparent"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@mipmap/ins"
-            android:scaleType="centerInside"/>
-        <ImageButton
+            android:backgroundTint="@color/gray"
+            app:backgroundTint="@android:color/transparent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_instagram"
+            />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/tw"
             app:layout_anchor="@id/logoFront"
             app:layout_anchorGravity="center"
-            android:background="@android:color/transparent"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@mipmap/tw"
-            android:scaleType="centerInside"/>
+            app:fabSize="mini"
+            android:backgroundTint="@color/gray"
+            app:backgroundTint="@android:color/transparent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_whatsapp"/>
+
+        <com.raqueveque.foodexample.RoundedImage
+            android:id="@+id/logoFront"
+            android:layout_width="@dimen/dimen_80dp_75dp_in_360"
+            android:layout_height="@dimen/dimen_80dp_75dp_in_360"
+            android:layout_margin="@dimen/dimen_18dp_16dp_in_360"
+            android:clickable="true"
+            android:padding="5dp"
+            android:elevation="20dp"
+            app:layout_collapseMode="parallax"
+            app:layout_collapseParallaxMultiplier="0.4"
+            android:src="@mipmap/logo"
+            app:backgroundTint="@android:color/transparent"
+            app:layout_anchor="@id/appbarMain"
+            app:layout_anchorGravity="center|bottom"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -159,7 +165,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbarDetail"
             android:layout_width="match_parent"
-            android:layout_height="278dp"
+            android:layout_height="@dimen/dimen_278dp_258dp_in_360"
             android:fitsSystemWindows="true"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:stateListAnimator="@animator/show_toolbar"
@@ -184,7 +190,7 @@
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="278dp"
+                    android:layout_height="@dimen/dimen_278dp_258dp_in_360"
                     android:fitsSystemWindows="true"
                     app:layout_collapseMode="parallax"
                     android:background="@color/black">
@@ -192,7 +198,7 @@
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/imageSliderViewPager"
                         android:layout_width="match_parent"
-                        android:layout_height="278dp"
+                        android:layout_height="@dimen/dimen_278dp_258dp_in_360"
                         android:fitsSystemWindows="true"
                         app:layout_collapseMode="parallax"
                         android:src="@mipmap/logo"
@@ -204,7 +210,7 @@
                     <com.facebook.shimmer.ShimmerFrameLayout
                         android:id="@+id/imageShimmer"
                         android:layout_width="match_parent"
-                        android:layout_height="278dp"
+                        android:layout_height="@dimen/dimen_278dp_258dp_in_360"
                         android:fitsSystemWindows="true"
                         app:layout_collapseMode="parallax"
                         android:src="@mipmap/logo"
@@ -287,7 +293,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Total"
-                            android:textSize="20sp" />
+                            android:textSize="@dimen/dimen_20sp_18sp_in_360" />
 
                         <TextView
                             android:id="@+id/price"
@@ -296,7 +302,7 @@
                             android:layout_weight="1"
                             android:text="$350"
                             android:textAlignment="textEnd"
-                            android:textSize="23sp" />
+                            android:textSize="@dimen/dimen_23sp_21sp_in_360" />
 
 
                     </LinearLayout>
@@ -325,7 +331,7 @@
                                 android:layout_marginVertical="10dp"
                                 android:layout_weight=".5"
                                 android:text="Variation"
-                                android:textSize="20sp" />
+                                android:textSize="@dimen/dimen_20sp_18sp_in_360" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -335,7 +341,7 @@
                                 android:text="Required"
                                 android:textAlignment="textEnd"
                                 android:textColor="@color/red"
-                                android:textSize="12sp"
+                                android:textSize="@dimen/dimen_12sp_10sp_in_360"
                                 android:textStyle="italic" />
                         </LinearLayout>
 
@@ -393,7 +399,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginVertical="10dp"
                                 android:text="Others"
-                                android:textSize="20sp" />
+                                android:textSize="@dimen/dimen_20sp_18sp_in_360" />
 
 
                         <RelativeLayout
@@ -456,7 +462,7 @@
                             android:layout_marginVertical="10dp"
                             android:gravity="center_vertical"
                             android:text="Others"
-                            android:textSize="20sp" />
+                            android:textSize="@dimen/dimen_20sp_18sp_in_360" />
 
                         <EditText
                             android:layout_width="match_parent"
@@ -465,7 +471,7 @@
                             android:gravity="start|top"
                             android:hint="Let us know if you have specific things in mind \n \n e.g. less spices, no mayo, etc."
                             android:inputType="textMultiLine"
-                            android:textSize="15sp" />
+                            android:textSize="@dimen/dimen_15sp_13sp_in_360" />
 
                     </LinearLayout>
 
@@ -482,12 +488,12 @@
 
                         <TextView
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
+                            android:layout_height="@dimen/dimen_40dp_38dp_in_360"
                             android:layout_marginVertical="10dp"
                             android:elevation="10dp"
                             android:gravity="center_vertical"
                             android:text="If the product is not available"
-                            android:textSize="20sp" />
+                            android:textSize="@dimen/dimen_20sp_18sp_in_360" />
 
                         <AutoCompleteTextView
                             android:layout_width="match_parent"
@@ -512,7 +518,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:elevation="6dp"
-            android:tint="@android:color/white"
+            android:backgroundTint="#FF03DAC5"
+            app:backgroundTint="@android:color/transparent"
             app:layout_anchor="@id/appbarDetail"
             app:layout_anchorGravity="bottom|end"
             app:pressedTranslationZ="12dp"
@@ -529,17 +536,17 @@
 
             <ImageButton
                 android:id="@+id/less"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginHorizontal="10dp"
+                android:layout_width="@dimen/dimen_35dp_33dp_in_360"
+                android:layout_height="@dimen/dimen_35dp_33dp_in_360"
+                android:layout_marginHorizontal="@dimen/dimen_10dp_8dp_in_360"
                 android:background="@drawable/quantity_bgn"
                 android:src="@drawable/ic_horizontal_rule_24"
                 android:elevation="6dp"/>
 
             <EditText
                 android:id="@+id/quantity"
-                android:layout_width="45dp"
-                android:layout_height="45dp"
+                android:layout_width="@dimen/dimen_45dp_43dp_in_360"
+                android:layout_height="@dimen/dimen_45dp_43dp_in_360"
                 android:gravity="center"
                 android:background="@drawable/quantity_bgn"
                 android:textColor="@color/white"
@@ -548,8 +555,8 @@
 
             <ImageButton
                 android:id="@+id/more"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_width="@dimen/dimen_35dp_33dp_in_360"
+                android:layout_height="@dimen/dimen_35dp_33dp_in_360"
                 android:layout_marginHorizontal="10dp"
                 android:background="@drawable/quantity_bgn"
                 android:src="@drawable/ic_add_24"

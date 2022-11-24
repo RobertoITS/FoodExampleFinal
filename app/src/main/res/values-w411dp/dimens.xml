@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dimen_24dp_22dp_in_360">24dp</dimen>
+    <dimen name="dimen_10dp_8dp_in_360">10dp</dimen>
+    <dimen name="dimen_70dp_65dp_in_360">70dp</dimen>
+    <dimen name="dimen_20sp_18sp_in_360">20sp</dimen>
+    <dimen name="dimen_14sp_12sp_in_360">14sp</dimen>
+    <dimen name="dimen_120dp_110dp_in_360">120dp</dimen>
+    <dimen name="dimen_278dp_258dp_in_360">278dp</dimen>
+    <dimen name="dimen_80dp_75dp_in_360">80dp</dimen>
+    <dimen name="dimen_18dp_16dp_in_360">18dp</dimen>
+    <dimen name="dimen_50dp_45dp_in_360">50dp</dimen>
+    <dimen name="dimen_23sp_21sp_in_360">23sp</dimen>
+    <dimen name="dimen_12sp_10sp_in_360">12sp</dimen>
+    <dimen name="dimen_15sp_13sp_in_360">15sp</dimen>
+    <dimen name="dimen_40dp_38dp_in_360">40dp</dimen>
+    <dimen name="dimen_35dp_33dp_in_360">35dp</dimen>
+    <dimen name="dimen_45dp_43dp_in_360">45dp</dimen>
+    <dimen name="dimen_220dp_210dp_in_360">220dp</dimen>
+</resources>

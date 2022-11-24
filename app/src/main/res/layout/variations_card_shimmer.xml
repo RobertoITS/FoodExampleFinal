@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/shimmer"
-        android:textSize="20sp"
+        android:textSize="@dimen/dimen_20sp_18sp_in_360"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
@@ -17,9 +17,9 @@
     <TextView
         android:layout_marginStart="10dp"
         android:id="@+id/price"
-        android:layout_width="220dp"
+        android:layout_width="@dimen/dimen_220dp_210dp_in_360"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="@dimen/dimen_20sp_18sp_in_360"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@+id/radioButton"
         app:layout_constraintBottom_toBottomOf="parent"
