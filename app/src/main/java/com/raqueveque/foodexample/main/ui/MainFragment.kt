@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.CompositePageTransformer
 import androidx.viewpager2.widget.MarginPageTransformer
 import androidx.viewpager2.widget.ViewPager2
+import com.ahmadhamwi.tabsync.TabbedListMediator
 import com.google.android.material.appbar.AppBarLayout
 import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
@@ -37,9 +38,12 @@ import com.raqueveque.foodexample.detail.SliderAdapter
 import com.raqueveque.foodexample.detail.adapter.ExtrasAdapter
 import com.raqueveque.foodexample.detail.adapter.VariationsAdapter
 import com.raqueveque.foodexample.detail.constructor.VariationsExtras
+import com.raqueveque.foodexample.main.adapter.CategoriesAdapter
 import com.raqueveque.foodexample.main.adapter.FoodAdapter
+import com.raqueveque.foodexample.main.constructor.Category
 import com.raqueveque.foodexample.main.constructor.Food
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.abs
 
 
@@ -70,7 +74,9 @@ class MainFragment : Fragment(), IOnBackPressed {
     private lateinit var eAdapter: ExtrasAdapter
     //Lista de comida principal y su adaptador
     private var foodArrayList: ArrayList<Food> = arrayListOf()
-    private lateinit var fAdapter: FoodAdapter
+    private var foodCategoryList: ArrayList<Food> = arrayListOf()
+    private var categories: ArrayList<Category> = arrayListOf()
+    private lateinit var fAdapter: CategoriesAdapter
     //Lista de pedidos
     private var orderList: ArrayList<OrderFood> = arrayListOf()
 
@@ -258,7 +264,7 @@ class MainFragment : Fragment(), IOnBackPressed {
             /**Comprobamos que la lista este vacia para
              * realizar una sola vez la consulta a la base
              * de datos, evitamos la sobrecarga de carga/descarga*/
-            if (foodArrayList.size == 0) {
+            if (foodCategoryList.size == 0) {
                 db = FirebaseFirestore.getInstance()
                 db.collection("food").addSnapshotListener(object : EventListener<QuerySnapshot> {
                     override fun onEvent(value: QuerySnapshot?, error: FirebaseFirestoreException?) {
@@ -269,8 +275,9 @@ class MainFragment : Fragment(), IOnBackPressed {
                         for (dc: DocumentChange in value?.documentChanges!!) {
                             if (dc.type == DocumentChange.Type.ADDED) {
                                 val item = Food(
-                                    dc.document.get("image")!!.toString(),
-                                    dc.document.get("name")!!.toString(),
+                                    dc.document.get("category").toString(), //Obtenemos la categoria
+                                    dc.document.get("image").toString(),
+                                    dc.document.get("name").toString(),
                                     dc.document.get("price") as Long?,
                                     //Pasamos el Id del documento
                                     dc.document.id
@@ -278,64 +285,94 @@ class MainFragment : Fragment(), IOnBackPressed {
                                 foodArrayList.add(item)
                             }
                         }
-                        updateListFood(foodArrayList)
+                        ordenarLista(foodArrayList) //Pasamos la lista para ordenarla
+                        updateListFood(categories)
                     }
                 })
             } else {
-                updateListFood(foodArrayList)
+                updateListFood(categories)
             }
         }
-        //El Buscardor
+
+    //Ver tab layout
+    private fun ordenarLista(foodArrayList: ArrayList<Food>) {
+        var category = ""
+        var index = 0
+        for (n in foodArrayList){
+            if (category == n.category) break //Retorna si la categoria ya se agrego
+            else { //Sino, continuamos con la siguiente
+                category = n.category.toString()
+                val list: ArrayList<Food> = arrayListOf()
+                for (m in foodArrayList){
+                    if (m.category == category && !foodCategoryList.contains(m)) list.add(m)
+                }
+                categories.add(Category(category, list))
+            }
+        }
+
+    }
+
+    //El Buscardor
         private fun searchFood(query: String) {
             var foodName = query
             if (foodName.isNotEmpty()) foodName =
                 foodName.substring(0, 1).uppercase(Locale.getDefault()) + foodName.substring(1)
                     .lowercase(Locale.getDefault())
             val results: ArrayList<Food> = ArrayList()
-            for (food in foodArrayList) {
+            for (food in foodCategoryList) {
                 if (food.name != null && food.name!!.contains(foodName)) {
                     results.add(food)
                 }
             }
-            updateListFood(results)
+            //updateListFood(results)
         }
         //Actualiza la lista del recycler
         @SuppressLint("NotifyDataSetChanged")
-        private fun updateListFood(listFood: ArrayList<Food>) {
-            fAdapter = FoodAdapter(listFood)
+        private fun updateListFood(listFood: ArrayList<Category>) {
+            fAdapter = CategoriesAdapter(requireContext(), listFood)
     //        binding.recycler.isNestedScrollingEnabled = false
             binding.recyclerMain.adapter = fAdapter
             fAdapter.notifyDataSetChanged()
 
-            /**Aqui sobreescribimos las funciones:*/
-            fAdapter.setOnItemClickListener(object : FoodAdapter.OnItemClickListener{
-                override fun onItemClick(position: Int) {
-                    id = foodArrayList[position].id
-                    actualPos = position
-                    binding.variationShimmer.visibility = View.VISIBLE
-                    binding.variationShimmer.startShimmer()
-                    binding.imageShimmer.visibility = View.VISIBLE
-                    binding.imageShimmer.startShimmer()
-                    binding.extrasShimmer.visibility = View.VISIBLE
-                    binding.extrasShimmer.startShimmer()
-                    revealLayoutFun()
-                }
-            })
-            fAdapter.setOnItemCheckListener(object : FoodAdapter.OnItemCheckListener{
-                override fun onItemCheck(position: Int, checkBox: View) {
-                    val check = checkBox as CheckBox
-                    if (check.isChecked) {
-                        checkedList.add(foodArrayList[position])
-                        //Esta variable maneja el estado del checkbox. Ver adaptador (OnBindViewHolder)
-                        listFood[position].check = true
-                    }
-                    else {
-                        checkedList.remove(foodArrayList[position])
-                        listFood[position].check = false
-                    }
+//            /**Aqui sobreescribimos las funciones:*/
+//            fAdapter.setOnItemClickListener(object : FoodAdapter.OnItemClickListener{
+//                override fun onItemClick(position: Int) {
+//                    id = foodCategoryList[position].id
+//                    actualPos = position
+//                    binding.variationShimmer.visibility = View.VISIBLE
+//                    binding.variationShimmer.startShimmer()
+//                    binding.imageShimmer.visibility = View.VISIBLE
+//                    binding.imageShimmer.startShimmer()
+//                    binding.extrasShimmer.visibility = View.VISIBLE
+//                    binding.extrasShimmer.startShimmer()
+//                    revealLayoutFun()
+//                }
+//            })
+//            fAdapter.setOnItemCheckListener(object : FoodAdapter.OnItemCheckListener{
+//                override fun onItemCheck(position: Int, checkBox: View) {
+//                    val check = checkBox as CheckBox
+//                    if (check.isChecked) {
+//                        checkedList.add(foodCategoryList[position])
+//                        //Esta variable maneja el estado del checkbox. Ver adaptador (OnBindViewHolder)
+//                        listFood[position].check = true
+//                    }
+//                    else {
+//                        checkedList.remove(foodCategoryList[position])
+//                        listFood[position].check = false
+//                    }
+//
+//                }
+//            })
 
-                }
-            })
+            //Ver tab layout
+            // Ver tab layout
+            for (n in categories){
+                binding.tabLayout.addTab(binding.tabLayout.newTab().setText(n.category))
+            }
+            Toast.makeText(context, categories.indices.toList().toString(), Toast.LENGTH_SHORT).show()
+            TabbedListMediator(
+                binding.recyclerMain, binding.tabLayout, categories.indices.toList()
+            ).attach()
         }
 
         //Inflamos el menu
@@ -514,7 +551,7 @@ class MainFragment : Fragment(), IOnBackPressed {
                 getVariations()
                 getExtras()
 
-                binding.collapsingToolbarDetail.title = foodArrayList[actualPos].name.toString()
+                binding.collapsingToolbarDetail.title = foodCategoryList[actualPos].name.toString()
 
             } else {
 

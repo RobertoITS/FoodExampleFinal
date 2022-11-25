@@ -94,14 +94,34 @@
             android:layout_marginTop="30dp"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerMain"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:minHeight="555dp"
-                tools:layout_editor_absoluteY="53dp" />
+                tools:layout_editor_absoluteY="53dp"
+                android:orientation="vertical">
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:elevation="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:tabIndicatorAnimationMode="elastic"
+                    app:tabMode="scrollable" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerMain"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+
+            </LinearLayout>
+
 
         </androidx.core.widget.NestedScrollView>
 

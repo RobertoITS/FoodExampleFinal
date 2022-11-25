@@ -76,6 +76,8 @@ dependencies {
 
     //shimmer
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+    implementation 'io.github.ahmad-hamwi:tabsync:1.0.1'
 }
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
