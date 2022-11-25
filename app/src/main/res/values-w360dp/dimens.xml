@@ -6,7 +6,7 @@
     <dimen name="dimen_20sp_18sp_in_360">18sp</dimen>
     <dimen name="dimen_14sp_12sp_in_360">12sp</dimen>
     <dimen name="dimen_120dp_110dp_in_360">110dp</dimen>
-    <dimen name="dimen_278dp_258dp_in_360">258dp</dimen>
+    <dimen name="dimen_278dp_258dp_in_360">198dp</dimen>
     <dimen name="dimen_80dp_75dp_in_360">75dp</dimen>
     <dimen name="dimen_18dp_16dp_in_360">18dp</dimen>
     <dimen name="dimen_50dp_45dp_in_360">45dp</dimen>
@@ -17,4 +17,7 @@
     <dimen name="dimen_35dp_33dp_in_360">33dp</dimen>
     <dimen name="dimen_45dp_43dp_in_360">43dp</dimen>
     <dimen name="dimen_220dp_210dp_in_360">210dp</dimen>
+    <integer name="value_190__">-110</integer>
+    <integer name="value_252__">-142</integer>
+    <integer name="value_190">110</integer>
 </resources>
